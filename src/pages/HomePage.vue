@@ -1,20 +1,24 @@
 <script>
 import { api, store } from "../store";
 import axios from "axios";
+import RestaurantCard from "../components/RestaurantCard.vue";
 
 export default {
   data() {
     return {
       store,
-      restaurants: null,
+      restaurants: [],
       types: [],
     };
+  },
+
+  components: {
+    RestaurantCard,
   },
 
   methods: {
     fetchRestaurant() {
       axios.get(api.baseUrl + `restaurants`).then((response) => {
-        console.log(response.data.data);
         store.restaurants = response.data.data;
       });
     },
@@ -88,45 +92,12 @@ export default {
 
     <!-- lista ristoranti  -->
     <section id="restaurant-list">
-      <div class="row row-cols-2 g-2 my-3">
-        <div
-          class="col"
-          v-for="restaurant in store.filterRestaurants"
-          v-if="store.filterRestaurants"
-        >
-          <div class="card h-100">
-            <img :src="restaurant.image" class="card-img-top" alt="..." />
-            <div class="card-body">
-              <div class="card-title">
-                {{ restaurant.name }}
-              </div>
-              <p class="card-text">
-                {{ restaurant.description }}
-              </p>
-            </div>
-            <div class="card-footer">
-              <div
-                class="badge bg-primary me-2"
-                v-for="type in restaurant.types"
-              >
-                <span>{{ type.name }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col" v-for="restaurant in store.restaurants" v-else>
-          <div class="card h-100">
-            <img :src="restaurant.image" class="card-img-top" alt="..." />
-            <div class="card-body">
-              <div class="card-title">
-                {{ restaurant.name }}
-              </div>
-              <p class="card-text">
-                {{ restaurant.description }}
-              </p>
-            </div>
-          </div>
-        </div>
+      <div class="row row-cols-2 g-2">
+        <restaurant-card
+          v-for="restaurant in store.restaurants"
+          :restaurant="restaurant"
+          :key="restaurant.id"
+        />
       </div>
       <!-- paginator -->
     </section>
