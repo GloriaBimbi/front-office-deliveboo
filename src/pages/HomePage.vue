@@ -17,10 +17,18 @@ export default {
         store.restaurants = response.data.data;
       });
     },
+
+    fetchTypes() {
+      axios.get(api.baseUrl + `types`).then((response) => {
+        console.log(response.data.data);
+        store.types = response.data.data;
+      });
+    },
   },
 
   created() {
     this.fetchRestaurant();
+    this.fetchTypes();
   },
 };
 </script>
@@ -34,15 +42,20 @@ export default {
     <!-- filtro tipologie -->
     <section id="type-filter">
       <div class="row">
-        <div class="col"></div>
+        <div class="col" v-for="type in store.types">
+          <div class="card">
+            <div class="card-image"><img :src="type.logo" alt="" /></div>
+            <div class="card-body">{{ type.name }}</div>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- lista ristoranti  -->
     <section id="restaurant-list">
-      <div class="row">
-        <div class="col-6" v-for="restaurant in store.restaurants">
-          <div class="card">
+      <div class="row row-cols-2 g-2">
+        <div class="col" v-for="restaurant in store.restaurants">
+          <div class="card h-100">
             <img :src="restaurant.image" class="card-img-top" alt="..." />
             <div class="card-body">
               <div class="card-title">
