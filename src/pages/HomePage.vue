@@ -13,7 +13,6 @@ export default {
   methods: {
     fetchRestaurant() {
       axios.get(api.baseUrl + `restaurants`).then((response) => {
-        console.log(response.data.data);
         store.restaurants = response.data.data;
       });
     },
@@ -54,18 +53,27 @@ export default {
     <!-- lista ristoranti  -->
     <section id="restaurant-list">
       <div class="row row-cols-2 g-2">
-        <div class="col" v-for="restaurant in store.restaurants">
-          <div class="card h-100">
-            <img :src="restaurant.image" class="card-img-top" alt="..." />
-            <div class="card-body">
-              <div class="card-title">
-                {{ restaurant.name }}
+        <div
+          class="col"
+          v-for="restaurant in store.restaurants"
+          :restaurant="restaurant"
+          :key="restaurant.id"
+        >
+          <router-link
+            :to="{ name: 'restaurant.show', params: { slug: restaurant.slug } }"
+          >
+            <div class="card h-100">
+              <img :src="restaurant.image" class="card-img-top" alt="..." />
+              <div class="card-body">
+                <div class="card-title">
+                  {{ restaurant.name }}
+                </div>
+                <p class="card-text">
+                  {{ restaurant.description }}
+                </p>
               </div>
-              <p class="card-text">
-                {{ restaurant.description }}
-              </p>
             </div>
-          </div>
+          </router-link>
         </div>
       </div>
       <!-- paginator -->
