@@ -11,9 +11,6 @@ export default {
       restaurant: [],
     };
   },
-  // mounted() {
-  //   this.fetchRestaurant(this.$route.params.slug);
-  // },
 
   created() {
     const restaurantSlug = this.$route.params.slug;
@@ -39,7 +36,7 @@ export default {
       </div>
     </div>
     <div class="row g-2">
-      <div class="col-4" v-for="dish in restaurant.dishes">
+      <div class="col-3" v-for="dish in restaurant.dishes">
         <div class="card h-100">
           <img :src="dish.image" class="card-img-top" alt="..." />
           <div class="card-body">
@@ -48,7 +45,7 @@ export default {
               {{ dish.description }}
             </p>
 
-            <a href="#" class="btn btn-primary">Go somewhere</a>
+            <a href="#" class="btn btn-primary">See details</a>
           </div>
         </div>
       </div>

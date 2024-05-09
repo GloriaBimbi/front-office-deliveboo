@@ -65,7 +65,7 @@ export default {
 <template>
   <div class="container">
     <section class="jumbo">
-      <h1>Homepage</h1>
+      <h1></h1>
     </section>
 
     <!-- filtro tipologie -->
@@ -92,7 +92,7 @@ export default {
 
     <!-- lista ristoranti  -->
     <section id="restaurant-list">
-      <div class="row row-cols-2 g-2">
+      <div class="row row-cols-4 g-2 mb-5">
         <restaurant-card
           v-for="restaurant in store.filterRestaurants"
           :restaurant="restaurant"
