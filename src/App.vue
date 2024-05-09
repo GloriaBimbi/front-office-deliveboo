@@ -2,6 +2,7 @@
 import axios from "axios";
 // import { store } from "./store";
 import AppHeader from "./components/AppHeader.vue";
+import AppFooter from "./components/AppFooter.vue";
 
 export default {
   data() {
@@ -13,6 +14,7 @@ export default {
 
   components: {
     AppHeader,
+    AppFooter
   },
 
   methods: {},
@@ -22,6 +24,7 @@ export default {
 <template>
   <app-header></app-header>
   <router-view></router-view>
+  <app-footer></app-footer>
 </template>
 
 <style lang="scss">
