@@ -1,6 +1,8 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 import * as bootstrap from "bootstrap";
+// router
+import { router } from "./router";
 
 // fontawesome
 import { library } from "@fortawesome/fontawesome-svg-core";
