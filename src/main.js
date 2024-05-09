@@ -16,8 +16,6 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 // esempio
 // <font-awesome-icon icon="fa-solid fa-house" />
 
-import { router } from "./router";
-
 const app = createApp(App);
 app.use(router);
 app.component("font-awesome-icon", FontAwesomeIcon);
