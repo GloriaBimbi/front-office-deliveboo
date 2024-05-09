@@ -13,7 +13,8 @@ export default {
         <img :src="restaurant.image" class="card-img-top" alt="..." />
         <div class="card-body">
           <div class="card-title">
-            {{ restaurant.name }}
+            <h2>{{ restaurant.name }}</h2>
+            <p class="restaurant-address">{{ restaurant.address }}</p>
           </div>
           <p class="card-text">
             {{ restaurant.description }}
@@ -24,4 +25,13 @@ export default {
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+a {
+  text-decoration: none;
+}
+
+.restaurant-address {
+  font-size: 15px;
+  color: #808080;
+}
+</style>

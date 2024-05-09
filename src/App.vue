@@ -14,7 +14,7 @@ export default {
 
   components: {
     AppHeader,
-    AppFooter
+    AppFooter,
   },
 
   methods: {},
@@ -22,11 +22,22 @@ export default {
 </script>
 
 <template>
-  <app-header></app-header>
-  <router-view></router-view>
-  <app-footer></app-footer>
+  <div class="wrapper">
+    <app-header></app-header>
+    <router-view class="main"></router-view>
+    <app-footer></app-footer>
+  </div>
 </template>
 
 <style lang="scss">
 @use "./styles/general.scss";
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+
+  .main {
+    flex-grow: 1;
+  }
+}
 </style>
