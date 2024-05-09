@@ -94,9 +94,16 @@ export default {
     <section id="restaurant-list">
       <div class="row row-cols-2 g-2">
         <restaurant-card
+          v-for="restaurant in store.filterRestaurants"
+          :restaurant="restaurant"
+          :key="restaurant.id"
+          v-if="store.filterRestaurants"
+        />
+        <restaurant-card
           v-for="restaurant in store.restaurants"
           :restaurant="restaurant"
           :key="restaurant.id"
+          v-else
         />
       </div>
       <!-- paginator -->
