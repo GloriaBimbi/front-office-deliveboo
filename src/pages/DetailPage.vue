@@ -32,16 +32,37 @@ export default {
 <template>
   <div class="container my-5">
     <!-- <a class="btn btn-primary" href="{{ api.baseUrl }}">Go Back</a> -->
-    <div class="row mb-3">
-      <div class="col-12 img-container text-center">
+    <div class="row mb-5">
+      <div class="col-6 img-container text-center">
         <img class="img-fluid" :src="restaurant.image" alt="" />
       </div>
-      <div class="col-12 text-center text-white">
+      <div class="col-6 text-white">
         <h1>{{ restaurant.name }}</h1>
-        <p>{{ restaurant.description }}</p>
+        <p class="text-light">{{ restaurant.description }}</p>
+        <p class="text-light fs-8">{{ restaurant.address }}</p>
       </div>
     </div>
-    <div class="row g-2">
+    <div class="wrapper-menu">
+      <h2 class="text-white">Menù</h2>
+      <ul class="mx-0 px-0">
+        <li class="d-flex gap-2 text-white" v-for="dish in restaurant.dishes">
+          <div class="img-wrapper">
+            <img :src="dish.image" alt="" />
+          </div>
+          <div class="dish-detail d-flex flex-column">
+            <h3>{{ dish.name }}</h3>
+            <p>{{ dish.description }}</p>
+          </div>
+          <div class="dish-purchase ms-auto d-flex flex-column">
+            <h3 class="dish-price">$ {{ dish.price }}</h3>
+            <div class="add-to-cart" @click="basketIncrementCounter()">
+              <h2>+</h2>
+            </div>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!-- <div class="row g-2">
       <div class="col-3" v-for="dish in restaurant.dishes">
         <div class="card bg-card h-100">
           <img :src="dish.image" class="card-img-top" alt="..." />
@@ -60,7 +81,7 @@ export default {
           </div>
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -72,5 +93,57 @@ export default {
 
 .card {
   cursor: pointer;
+}
+
+.img-container {
+  img {
+    width: 100%;
+  }
+}
+
+.wrapper-menu {
+  ul {
+    li {
+      padding-block: 1rem;
+      border-block: 1px solid #0099ff;
+    }
+  }
+  .img-wrapper {
+    height: 200px;
+    img {
+      height: 100%;
+    }
+  }
+  .dish-detail {
+    text-transform: capitalize;
+    padding-block: 0.5rem;
+    p {
+      margin-top: auto;
+      margin-bottom: 0;
+    }
+  }
+
+  .dish-purchase {
+    min-width: 100px;
+    align-items: end;
+
+    .dish-price {
+      padding-top: 0.5rem;
+    }
+    .add-to-cart {
+      width: 75px;
+      margin-top: auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      aspect-ratio: 1;
+      background-color: #0099ff;
+      border-radius: 50%;
+      &:hover {
+        background-color: #23a7ff;
+      }
+    }
+  }
 }
 </style>
