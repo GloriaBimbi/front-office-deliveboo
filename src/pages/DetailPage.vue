@@ -36,7 +36,7 @@ export default {
       <div class="col-12 img-container text-center">
         <img class="img-fluid" :src="restaurant.image" alt="" />
       </div>
-      <div class="col-6 text-info">
+      <div class="col-12 text-center text-white">
         <h1>{{ restaurant.name }}</h1>
         <p>{{ restaurant.description }}</p>
       </div>
@@ -68,5 +68,9 @@ export default {
 .bg-card {
   background-color: rgba(0, 153, 255, 0.1);
   color: #ffffff;
+}
+
+.card {
+  cursor: pointer;
 }
 </style>
