@@ -72,7 +72,7 @@ export default {
     <section id="type-filter">
       <div class="row g-2">
         <div class="col-2" v-for="types in types">
-          <div class="card h-100" :class="types.active ? 'active' : ''">
+          <div class="card bg-card h-100" :class="types.active ? 'active' : ''">
             <div class="card-top">
               <div class="card-image">
                 <img
@@ -92,7 +92,7 @@ export default {
 
     <!-- lista ristoranti  -->
     <section id="restaurant-list">
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-5">
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-5 ">
         <restaurant-card
           v-for="restaurant in store.filterRestaurants"
           :restaurant="restaurant"
@@ -158,5 +158,9 @@ export default {
       border: 2px solid blue;
     }
   }
+  .bg-card {
+  background-color: rgba(0, 153, 255, 0.1);
+  color: #ffffff;
+}
 }
 </style>
