@@ -9,14 +9,11 @@ export default {
   },
 };
 </script>
-
 <template>
   <nav class="navbar">
     <div class="container">
       <div class="container-logo">
-        <a href="http://localhost:5173/">
-          <img src="../assets/Group-30.png" alt="logo" />
-        </a>
+        <img src="../assets/Group-30.png" alt="logo" />
       </div>
       <div class="d-flex gap-3">
         <div class="basket-container">
