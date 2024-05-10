@@ -30,14 +30,14 @@ export default {
       <div class="col-6">
         <img class="img-fluid" :src="restaurant.image" alt="" />
       </div>
-      <div class="col-6">
+      <div class="col-6 text-info">
         <h1>{{ restaurant.name }}</h1>
         <p>{{ restaurant.description }}</p>
       </div>
     </div>
     <div class="row g-2">
       <div class="col-3" v-for="dish in restaurant.dishes">
-        <div class="card h-100">
+        <div class="card bg-card h-100">
           <img :src="dish.image" class="card-img-top" alt="..." />
           <div class="card-body">
             <h5 class="card-title">{{ dish.name }}</h5>
@@ -53,4 +53,9 @@ export default {
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.bg-card {
+  background-color: rgba(0, 153, 255, 0.1);
+  color: #ffffff;
+}
+</style>

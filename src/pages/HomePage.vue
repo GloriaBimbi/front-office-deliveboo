@@ -72,7 +72,7 @@ export default {
     <section id="type-filter">
       <div class="row g-2">
         <div class="col-1" v-for="types in types">
-          <div class="card h-100" :class="types.active ? 'active' : ''">
+          <div class="card bg-card h-100" :class="types.active ? 'active' : ''">
             <div class="card-top">
               <div class="card-image">
                 <img
@@ -163,6 +163,10 @@ export default {
       font-size: 0.5rem;
       font-weight: 700;
     }
+  }
+  .bg-card {
+    background-color: rgba(0, 153, 255, 0.1);
+    color: #ffffff;
   }
 }
 </style>
