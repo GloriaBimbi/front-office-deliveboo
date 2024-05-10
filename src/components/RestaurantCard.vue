@@ -9,7 +9,7 @@ export default {
     <router-link
       :to="{ name: 'restaurant.show', params: { slug: restaurant.slug } }"
     >
-      <div class="card h-100">
+      <div class="card bg-card h-100">
         <img :src="restaurant.image" class="card-img-top" alt="..." />
         <div class="card-body">
           <div class="card-title">
@@ -19,6 +19,11 @@ export default {
           <p class="card-text">
             {{ restaurant.description }}
           </p>
+        </div>
+        <div class="card-footer">
+          <div class="badge bg-primary me-1" v-for="type in restaurant.types">
+            {{ type.name }}
+          </div>
         </div>
       </div>
     </router-link>
@@ -33,5 +38,9 @@ a {
 .restaurant-address {
   font-size: 15px;
   color: #808080;
+}
+.bg-card {
+  background-color: rgba(0, 153, 255, 0.1);
+  color: #ffffff;
 }
 </style>

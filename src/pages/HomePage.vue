@@ -71,8 +71,8 @@ export default {
     <!-- filtro tipologie -->
     <section id="type-filter">
       <div class="row g-2">
-        <div class="col-2" v-for="types in types">
-          <div class="card h-100" :class="types.active ? 'active' : ''">
+        <div class="col-1" v-for="types in types">
+          <div class="card bg-card h-100" :class="types.active ? 'active' : ''">
             <div class="card-top">
               <div class="card-image">
                 <img
@@ -84,7 +84,7 @@ export default {
                 />
               </div>
             </div>
-            <div class="card-bottom">{{ types.name }}</div>
+            <div class="card-bottom type-label">{{ types.name }}</div>
           </div>
         </div>
       </div>
@@ -92,7 +92,7 @@ export default {
 
     <!-- lista ristoranti  -->
     <section id="restaurant-list">
-      <div class="row row-cols-4 g-2 mb-5">
+      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-5">
         <restaurant-card
           v-for="restaurant in store.filterRestaurants"
           :restaurant="restaurant"
@@ -132,6 +132,8 @@ export default {
     border-top-right-radius: 50%;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    -webkit-box-shadow: 1px 12px 17px -5px rgba(0, 0, 0, 0.34);
+    box-shadow: 1px 5px 10px -5px rgba(0, 0, 0, 0.34);
     .card-top {
       aspect-ratio: 1;
       .card-image {
@@ -152,11 +154,19 @@ export default {
     }
 
     .card-bottom {
-      padding-top: 0.5rem;
+      padding-top: 0.2rem;
     }
     &.active {
-      border: 2px solid blue;
+      border: 2px solid #002238;
     }
+    .type-label {
+      font-size: 0.5rem;
+      font-weight: 700;
+    }
+  }
+  .bg-card {
+    background-color: rgba(0, 153, 255, 0.1);
+    color: #ffffff;
   }
 }
 </style>

@@ -15,7 +15,7 @@ export default {
     <div class="container">
       <div class="container-logo">
         <a href="http://localhost:5173/">
-          <img src="../assets/Group-27.png" alt="logo" />
+          <img src="../assets/Group-30.png" alt="logo" />
         </a>
       </div>
       <div class="d-flex gap-3">
