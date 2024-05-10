@@ -20,6 +20,11 @@ export default {
             {{ restaurant.description }}
           </p>
         </div>
+        <div class="card-footer">
+          <div class="badge bg-primary me-1" v-for="type in restaurant.types">
+            {{ type.name }}
+          </div>
+        </div>
       </div>
     </router-link>
   </div>
