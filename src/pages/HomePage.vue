@@ -30,14 +30,14 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.result);
+          // console.log(response.data.result);
           store.filterRestaurants = response.data.result;
         });
     },
 
     fetchTypes() {
       axios.get(api.baseUrl + `types`).then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         this.types = response.data;
       });
     },
@@ -46,11 +46,21 @@ export default {
       type.active = !type.active;
       this.fetchFilterRestaurant();
     },
+
+    clearFilters() {
+      let types = this.activeTypes;
+      this.types.forEach((type) => (type.active = false));
+      store.filterRestaurants = store.restaurants;
+    },
   },
 
   computed: {
-    activeTypesId() {
+    activeTypes() {
       let activeTypes = this.types.filter((type) => type.active);
+      return activeTypes;
+    },
+    activeTypesId() {
+      let activeTypes = this.activeTypes;
       let activeTypesId = activeTypes.map((type) => type.id);
       return activeTypesId;
     },
@@ -88,6 +98,24 @@ export default {
           </div>
         </div>
       </div>
+      <!-- filter section -->
+      <div class="filter-section container">
+        <div class="row">
+          <h3 class="col-4">Your filters:</h3>
+          <div class="col-4">
+            <div
+              v-show="types.active"
+              v-for="types in types"
+              class="filter-item"
+            >
+              {{ types.name }}
+            </div>
+          </div>
+          <div class="col-4">
+            <button class="reset-button" @click="clearFilters()">reset</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- lista ristoranti  -->
@@ -118,6 +146,26 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+// filter section
+.filter-section {
+  background-color: rgba(6, 82, 149, 0.345);
+  min-height: 10px;
+  margin-bottom: 30px;
+  border-radius: 1rem;
+  color: grey;
+}
+.reset-button {
+  padding: 5px 10px;
+  border-radius: 10px;
+  border: 0px;
+  background-color: rgb(7, 24, 126);
+  color: white;
+
+  &:hover {
+    background-color: rgb(41, 70, 232);
+    color: rgb(137, 167, 255);
+  }
+}
 // braintree sistema di pagamento
 .button {
   cursor: pointer;

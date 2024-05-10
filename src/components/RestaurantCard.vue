@@ -16,9 +16,9 @@ export default {
             <h2>{{ restaurant.name }}</h2>
             <p class="restaurant-address">{{ restaurant.address }}</p>
           </div>
-          <p class="card-text">
+          <!-- <p class="card-text">
             {{ restaurant.description }}
-          </p>
+          </p> -->
         </div>
         <div class="card-footer">
           <div class="badge bg-primary me-1" v-for="type in restaurant.types">
