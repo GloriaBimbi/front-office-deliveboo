@@ -157,7 +157,7 @@ export default {
       padding-top: 0.2rem;
     }
     &.active {
-      border: 2px solid #002238;
+      border: 2px solid rgba(255, 255, 255, 0.564);
     }
     .type-label {
       font-size: 0.5rem;
