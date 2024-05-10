@@ -71,7 +71,7 @@ export default {
     <!-- filtro tipologie -->
     <section id="type-filter">
       <div class="row g-2">
-        <div class="col-2" v-for="types in types">
+        <div class="col-1" v-for="types in types">
           <div class="card h-100" :class="types.active ? 'active' : ''">
             <div class="card-top">
               <div class="card-image">
@@ -84,7 +84,7 @@ export default {
                 />
               </div>
             </div>
-            <div class="card-bottom">{{ types.name }}</div>
+            <div class="card-bottom type-label">{{ types.name }}</div>
           </div>
         </div>
       </div>
@@ -132,6 +132,8 @@ export default {
     border-top-right-radius: 50%;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    -webkit-box-shadow: 1px 12px 17px -5px rgba(0, 0, 0, 0.34);
+    box-shadow: 1px 5px 10px -5px rgba(0, 0, 0, 0.34);
     .card-top {
       aspect-ratio: 1;
       .card-image {
@@ -152,10 +154,14 @@ export default {
     }
 
     .card-bottom {
-      padding-top: 0.5rem;
+      padding-top: 0.2rem;
     }
     &.active {
-      border: 2px solid blue;
+      border: 2px solid #002238;
+    }
+    .type-label {
+      font-size: 0.5rem;
+      font-weight: 700;
     }
   }
 }
