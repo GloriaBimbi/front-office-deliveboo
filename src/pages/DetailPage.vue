@@ -32,6 +32,9 @@ export default {
 <template>
   <div class="container my-5">
     <!-- <a class="btn btn-primary" href="{{ api.baseUrl }}">Go Back</a> -->
+    <a @click="$router.go(-1)" class="btn back-button mb-2"
+      ><i class="fa-solid fa-arrow-rotate-left"></i> Back to Home</a
+    >
     <div class="row mb-5">
       <div class="col-6 img-container text-center">
         <img class="img-fluid" :src="restaurant.image" alt="" />
@@ -147,6 +150,24 @@ export default {
         background-color: #23a7ff;
       }
     }
+  }
+}
+
+.back-button {
+  padding: 1rem 2rem;
+  background-color: rgba(255, 255, 255, 0.807);
+  font-weight: 600;
+  border-radius: 3px;
+
+  opacity: 0.5;
+  a {
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  &:hover {
+    opacity: 1;
+    transition: opacity linear 0.1s;
   }
 }
 </style>
