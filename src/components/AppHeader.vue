@@ -20,7 +20,9 @@ export default {
       </div>
       <div class="d-flex gap-3">
         <div class="basket-container">
-          <div class="shooping-chart">Shopping Chart</div>
+          <div class="shooping-chart">
+            <i class="cart-icon" :class="['fas', 'fa-cart-shopping']"></i>
+          </div>
           <div class="conunter">{{ store.counter }}</div>
         </div>
         <a
@@ -57,13 +59,16 @@ export default {
 
     .shooping-chart {
       color: #41a080;
+      .cart-icon {
+        font-size: 25px;
+      }
     }
     .conunter {
       color: white;
       position: absolute;
       text-align: center;
-      left: 108px;
-      bottom: 14px;
+      left: 20px;
+      bottom: 18px;
       width: 25px;
       height: 20px;
       padding-bottom: 25px;

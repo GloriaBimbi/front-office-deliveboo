@@ -56,7 +56,7 @@ export default {
           <div class="dish-purchase ms-auto d-flex flex-column">
             <h3 class="dish-price">$ {{ dish.price }}</h3>
             <div class="add-to-cart" @click="basketIncrementCounter()">
-              <h2>+</h2>
+              <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
             </div>
           </div>
         </li>
@@ -129,6 +129,7 @@ export default {
 
     .dish-price {
       padding-top: 0.5rem;
+      font-size: 1.67rem;
     }
     .add-to-cart {
       width: 75px;
@@ -138,6 +139,8 @@ export default {
       align-items: center;
       cursor: pointer;
       aspect-ratio: 1;
+      padding-left: 1px;
+      padding-top: 4px;
       background-color: #0099ff;
       border-radius: 50%;
       &:hover {
