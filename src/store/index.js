@@ -11,4 +11,5 @@ export const store = reactive({
   dishes: [],
   types: [],
   pagination: [],
+  counter: 0,
 });

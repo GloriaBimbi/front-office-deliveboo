@@ -21,16 +21,22 @@ export default {
         this.restaurant = response.data;
       });
   },
+  methods: {
+    basketIncrementCounter() {
+      store.counter++;
+    },
+  },
 };
 </script>
 
 <template>
   <div class="container my-5">
+    <!-- <a class="btn btn-primary" href="{{ api.baseUrl }}">Go Back</a> -->
     <div class="row mb-3">
-      <div class="col-6">
+      <div class="col-12 img-container text-center">
         <img class="img-fluid" :src="restaurant.image" alt="" />
       </div>
-      <div class="col-6">
+      <div class="col-12 text-center">
         <h1>{{ restaurant.name }}</h1>
         <p>{{ restaurant.description }}</p>
       </div>
@@ -44,8 +50,13 @@ export default {
             <p class="card-text">
               {{ dish.description }}
             </p>
-
-            <a href="#" class="btn btn-primary">See details</a>
+            <a href="#" class="btn btn-primary">Details</a>
+            <a
+              href="#"
+              class="btn btn-success mx-3"
+              @click="basketIncrementCounter()"
+              >+ Order</a
+            >
           </div>
         </div>
       </div>
@@ -53,4 +64,8 @@ export default {
   </div>
 </template>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.card {
+  cursor: pointer;
+}
+</style>
