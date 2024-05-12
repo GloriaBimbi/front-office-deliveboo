@@ -1,7 +1,12 @@
-# Vue 3 + Vite
+## Ragionamento sul funzioamento del carrello:
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+- clicco sul tasto "+" per aggiungere il piatto al carello
+- con una funzione aggiungo l'attributo 'into-cart=true' e l'attributo 'quantity=1',
 
-## Recommended IDE Setup
+  - ora appare anche il tasto '-',
 
-- [VS Code](https://code.visualstudio.com/) + [Vue - Official](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (previously Volar) and disable Vetur
+- se riclicco sul tasto '+' solo l'attributo quantity si aggiorna: 'quantity++',
+
+- se clicco sul tasto '-' l'attributo quantity si aggiorna: 'quantity--',
+
+  - se 'quantity' = 0 l'attributo 'into-cart'= false
