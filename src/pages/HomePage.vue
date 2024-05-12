@@ -39,6 +39,7 @@ export default {
       axios.get(api.baseUrl + `types`).then((response) => {
         // console.log(response.data);
         this.types = response.data;
+        store.types = this.types;
       });
     },
 
@@ -118,7 +119,7 @@ export default {
       </div>
     </section>
 
-    <!-- lista ristoranti  -->
+    <!-- restaurants list  -->
     <section id="restaurant-list">
       <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-5">
         <restaurant-card

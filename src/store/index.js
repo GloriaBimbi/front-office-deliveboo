@@ -12,4 +12,13 @@ export const store = reactive({
   types: [],
   pagination: [],
   counter: 0,
+  modal: {
+    show: false,
+    name: "",
+    image: "",
+    description: "",
+    price: null,
+    ingredients_list: "",
+  },
+  selectedDishIndex: null,
 });

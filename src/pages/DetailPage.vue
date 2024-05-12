@@ -17,13 +17,36 @@ export default {
     axios
       .get(api.baseUrl + `restaurants/${restaurantSlug}`)
       .then((response) => {
-        console.log(response.data);
         this.restaurant = response.data;
+        store.dishes = this.restaurant.dishes;
       });
   },
   methods: {
     basketIncrementCounter() {
       store.counter++;
+    },
+    handleModalOpening(dish) {
+      store.selectedDish = dish;
+      // console.log(store.selectedDish);
+      // for (let i = 0; i < store.dishes.length; i++) {
+      //   if (store.dishes[i] === store.selectedDish) {
+      //     return store.selectedDish;
+      //   }
+      //   console.log(store.selectedDish);
+      // }
+      const selectedDish = store.selectedDish;
+
+      //controllo che l'indice esista e nel caso collego la modale cliccata con le sue chiavi nello store
+      if (store.dishes.includes(selectedDish)) {
+        store.modal.name = selectedDish.name;
+        store.modal.image = selectedDish.image;
+        store.modal.description = selectedDish.description;
+        store.modal.price = selectedDish.price;
+        store.modal.ingredients_list = selectedDish.ingredients_list;
+        //faccio in modo che cliccando su una card si apra la modale
+        store.modal.show = true;
+        console.log(store.modal);
+      }
     },
   },
 };
@@ -49,10 +72,13 @@ export default {
       <h2 class="text-white">Menù</h2>
       <ul class="mx-0 px-0">
         <li class="d-flex gap-2 text-white" v-for="dish in restaurant.dishes">
-          <div class="img-wrapper">
+          <div @click="handleModalOpening(dish)" class="img-wrapper">
             <img :src="dish.image" alt="" />
           </div>
-          <div class="dish-detail d-flex flex-column">
+          <div
+            class="dish-detail d-flex flex-column"
+            @click="handleModalOpening(dish)"
+          >
             <h3>{{ dish.name }}</h3>
             <p>{{ dish.description }}</p>
           </div>
@@ -115,11 +141,13 @@ export default {
     height: 200px;
     img {
       height: 100%;
+      cursor: pointer;
     }
   }
   .dish-detail {
     text-transform: capitalize;
     padding-block: 0.5rem;
+    cursor: pointer;
     p {
       margin-top: auto;
       margin-bottom: 0;
