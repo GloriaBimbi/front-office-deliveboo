@@ -20,5 +20,6 @@ export const store = reactive({
     price: null,
     ingredients_list: "",
   },
-  selectedDishIndex: null,
+  selectedDish: null,
+  error: false,
 });

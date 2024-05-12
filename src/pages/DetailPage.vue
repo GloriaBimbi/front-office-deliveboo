@@ -9,6 +9,7 @@ export default {
     return {
       store,
       restaurant: [],
+      error: "",
     };
   },
 
@@ -19,6 +20,14 @@ export default {
       .then((response) => {
         this.restaurant = response.data;
         store.dishes = this.restaurant.dishes;
+      })
+      .catch((error) => {
+        store.error = true;
+        if (error.response.status === 404) {
+          this.error = "Error 404: Page not found.";
+        } else {
+          this.error = "An error occurred while retrieving the data.";
+        }
       });
   },
   methods: {
@@ -77,7 +86,7 @@ export default {
         <p class="text-light fs-8">{{ restaurant.address }}</p>
       </div>
     </div>
-    <div class="wrapper-menu">
+    <div v-if="!store.error" class="wrapper-menu">
       <h2 class="text-white">Menù</h2>
       <ul class="mx-0 px-0">
         <li class="d-flex gap-2 text-white" v-for="dish in restaurant.dishes">
@@ -99,6 +108,9 @@ export default {
           </div>
         </li>
       </ul>
+    </div>
+    <div v-if="store.error">
+      <h2 class="error-text">{{ this.error }}</h2>
     </div>
     <!-- <div class="row g-2">
       <div class="col-3" v-for="dish in restaurant.dishes">
@@ -190,6 +202,11 @@ export default {
       scale: 1.5;
       transition: 0.25s;
     }
+  }
+
+  .error-text {
+    color: red;
+    text-align: center;
   }
 }
 

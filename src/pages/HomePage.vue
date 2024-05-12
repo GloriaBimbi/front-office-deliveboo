@@ -86,7 +86,7 @@ export default {
       <h1></h1>
     </section>
 
-    <!-- filtro tipologie -->
+    <!-- types filter -->
     <section id="type-filter">
       <div class="row g-2">
         <div class="col-1" v-for="types in types">
@@ -156,7 +156,7 @@ export default {
       </div>
     </section>
 
-    <!-- braintree sistema di pagamento  -->
+    <!-- braintree payment system  -->
     <div id="dropin-container"></div>
     <button id="submit-button" class="button button--small button--green">
       Purchase
@@ -166,7 +166,6 @@ export default {
 
 <style lang="scss" scoped>
 // filter section
-
 .filter-section {
   background-color: rgba(6, 82, 149, 0.345);
   min-height: 10px;
@@ -204,7 +203,7 @@ export default {
     color: rgb(137, 167, 255);
   }
 }
-// braintree sistema di pagamento
+// braintree payment system
 .button {
   cursor: pointer;
   font-weight: 500;
@@ -238,7 +237,7 @@ export default {
   background-color: #8bdda8;
   color: white;
 }
-// fine sisema di pagamento
+// other
 #type-filter {
   .row {
     flex-wrap: nowrap;
