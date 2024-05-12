@@ -26,8 +26,10 @@ export default {
 <template>
   <div class="wrapper">
     <app-header></app-header>
-    <router-view class="main"></router-view>
-    <app-modal v-if="store.modal.show" />
+    <div class="main">
+      <router-view></router-view>
+      <app-modal v-if="store.modal.show" />
+    </div>
     <app-footer></app-footer>
   </div>
 </template>
