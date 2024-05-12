@@ -170,6 +170,7 @@ export default {
 .cart-list {
   padding: 0;
   list-style-type: none;
+  overflow: auto;
   .cart-list-item {
     display: flex;
     gap: 0.5rem;
