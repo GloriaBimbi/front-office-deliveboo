@@ -10,3 +10,6 @@
 - se clicco sul tasto '-' l'attributo quantity si aggiorna: 'quantity--',
 
   - se 'quantity' = 0 l'attributo 'into-cart'= false
+
+- tutti i piatti che hanno l'attributo 'into-cart' = true vengono stampati nel carrello
+  - il prezzo viene calcolato come dish.price\*quantity
