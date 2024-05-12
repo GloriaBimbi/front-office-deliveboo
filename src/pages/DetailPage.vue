@@ -54,6 +54,15 @@ export default {
 
 <template>
   <div class="container my-5">
+    <a
+      class="open-cart-btn"
+      data-bs-toggle="offcanvas"
+      href="#offcanvasExample"
+      role="button"
+      aria-controls="offcanvasExample"
+    >
+      <i class="fa-solid fa-shopping-cart"></i>
+    </a>
     <!-- <a class="btn btn-primary" href="{{ api.baseUrl }}">Go Back</a> -->
     <a @click="$router.go(-1)" class="btn back-button mb-2"
       ><i class="fa-solid fa-arrow-rotate-left"></i> Back to Home</a
@@ -112,9 +121,177 @@ export default {
       </div>
     </div> -->
   </div>
+
+  <div
+    class="offcanvas offcanvas-end w-50"
+    tabindex="-1"
+    id="offcanvasExample"
+    aria-labelledby="offcanvasExampleLabel"
+  >
+    <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Shopping cart</h5>
+      <!-- <button
+        type="button"
+        class="btn-close"
+        data-bs-dismiss="offcanvas"
+        aria-label="Close"
+      ></button> -->
+    </div>
+    <div class="offcanvas-body d-flex flex-column">
+      <ul class="cart-list">
+        <li class="cart-list-item">
+          <div class="img-dish-wrapper">
+            <img src="https://picsum.photos/200/300" alt="" />
+          </div>
+          <div class="primary-info">
+            <h5>Dish name</h5>
+            <p>price:</p>
+          </div>
+          <div class="quantity-info">
+            <p>x</p>
+            <div class="quantity-wrapper">
+              <div class="quantity-btn minus">-</div>
+              <div class="quantity-btn plus">+</div>
+            </div>
+          </div>
+        </li>
+      </ul>
+      <div class="checkout-wrapper mt-auto">
+        <div class="total-price">
+          <span>Total price: $ 0</span>
+          <div class="btn-wrapper d-flex">
+            <div class="checkout-btn">Check-out</div>
+            <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style lang="scss" scoped>
+.container {
+  position: relative;
+  .open-cart-btn {
+    position: fixed;
+    top: 100px;
+    right: 1rem;
+
+    background-color: white;
+    aspect-ratio: 1 / 1;
+    height: 35px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: black;
+    &:hover {
+      scale: 1.5;
+      transition: 0.25s;
+    }
+  }
+}
+
+.cart-list {
+  padding: 0;
+  list-style-type: none;
+  .cart-list-item {
+    display: flex;
+    gap: 0.5rem;
+    border-block: 1px solid rgba(0, 0, 0);
+    padding: 0.5rem;
+
+    .img-dish-wrapper {
+      width: 100px;
+      height: 100px;
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+    }
+
+    .primary-info {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding-block: 0.5rem;
+      p {
+        margin-bottom: 0;
+      }
+    }
+
+    .quantity-info {
+      display: flex;
+      margin-left: auto;
+      flex-direction: column;
+      justify-content: space-between;
+      // padding-block: 0.5rem;
+      p {
+        text-align: end;
+        font-size: 1.5rem;
+      }
+      .quantity-wrapper {
+        display: flex;
+        gap: 0.5rem;
+        margin-left: auto;
+        .quantity-btn {
+          height: 30px;
+          line-height: 30px;
+          vertical-align: top;
+          font-size: 1.5rem;
+          font-weight: bold;
+          aspect-ratio: 1 / 1;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          border-radius: 50%;
+          color: white;
+          &.minus {
+            background-color: #d9d9d9;
+          }
+          &.plus {
+            background-color: #0073de;
+          }
+        }
+      }
+    }
+  }
+}
+.checkout-wrapper {
+  border-top: 1px solid rgba(0, 0, 0);
+  padding: 0.5rem;
+  .btn-wrapper {
+    padding-top: 1rem;
+    display: flex;
+    gap: 0.75rem;
+    justify-content: space-between;
+    align-items: center;
+    .checkout-btn,
+    .close-btn {
+      padding: 0.5rem;
+      background-color: #0073de;
+      width: 100%;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+    }
+    .close-btn {
+      background-color: white;
+      color: red;
+      text-decoration: underline;
+      box-shadow: 0px 5px 8px 2px rgba(0, 0, 0, 0.2);
+      &:hover {
+        background-color: rgb(251, 251, 251);
+      }
+    }
+    .checkout-btn:hover {
+      background-color: #0060ba;
+    }
+  }
+}
+
 .bg-card {
   background-color: rgba(0, 153, 255, 0.1);
   color: #ffffff;
