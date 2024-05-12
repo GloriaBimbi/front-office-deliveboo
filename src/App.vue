@@ -1,13 +1,14 @@
 <script>
 import axios from "axios";
-// import { store } from "./store";
+import { store } from "./store";
 import AppHeader from "./components/AppHeader.vue";
 import AppFooter from "./components/AppFooter.vue";
+import AppModal from "./components/AppModal.vue";
 
 export default {
   data() {
     return {
-      //   store,
+      store,
       title: "Boolfolio",
     };
   },
@@ -15,6 +16,7 @@ export default {
   components: {
     AppHeader,
     AppFooter,
+    AppModal,
   },
 
   methods: {},
@@ -25,6 +27,7 @@ export default {
   <div class="wrapper">
     <app-header></app-header>
     <router-view class="main"></router-view>
+    <app-modal v-if="store.modal.show" />
     <app-footer></app-footer>
   </div>
 </template>
