@@ -165,11 +165,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-<<<<<<< HEAD
-// braintree payment system
-=======
 // filter section
-
 .filter-section {
   background-color: rgba(6, 82, 149, 0.345);
   min-height: 10px;
@@ -196,8 +192,7 @@ export default {
     color: rgb(137, 167, 255);
   }
 }
-// braintree sistema di pagamento
->>>>>>> ff1d78e406e47b18c22c596e3ea70fbc6eebae01
+// braintree payment system
 .button {
   cursor: pointer;
   font-weight: 500;
