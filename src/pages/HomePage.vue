@@ -109,23 +109,23 @@ export default {
     </section>
 
     <!-- filter section -->
+
     <div class="filter-section container">
       <div class="row">
-        <h3 class="col-4">Your filters:</h3>
-        <div class="col-4 type-col">
-          <template v-for="(type, index) in types">
-            <div v-if="type.active" class="filter-item">
-              <p>
-                {{ type.name
-                }}<span
-                  v-if="index < types.length - 1 && types[index + 1].active"
-                  >,
-                </span>
-              </p>
-            </div>
-          </template>
+        <div class="col-6 type-col">
+          <h3>Your filters:</h3>
+          <div
+            v-for="(selectedType, index) in activeTypes"
+            :key="selectedType.id"
+            class="filter-item"
+          >
+            <p>
+              {{ selectedType.name
+              }}<span v-if="index < activeTypes.length - 1">,&nbsp;</span>
+            </p>
+          </div>
         </div>
-        <div class="col-4">
+        <div class="col-1">
           <button class="reset-button" @click="clearFilters()">reset</button>
         </div>
       </div>
@@ -180,6 +180,17 @@ export default {
   }
   .type-col {
     display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    flex-grow: 1;
+    gap: 2;
+  }
+
+  h3 {
+    line-height: none;
+  }
+  p {
+    margin: 0;
   }
 }
 .reset-button {
