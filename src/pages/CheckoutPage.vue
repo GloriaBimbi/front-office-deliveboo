@@ -18,6 +18,11 @@ export default {
       return totalPrice.toFixed(2);
     },
   },
+
+  created() {
+    const storedCart = localStorage.getItem("cart");
+    store.checkoutCart = storedCart ? JSON.parse(storedCart) : [];
+  },
 };
 </script>
 
