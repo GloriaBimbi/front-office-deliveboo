@@ -11,13 +11,14 @@ export default {
       restaurant: [],
       cart: JSON.parse(localStorage.getItem("cart")) || [],
       error: "",
+      showErrorModal: false,
     };
   },
 
   created() {
     const storedCart = localStorage.getItem("cart");
     this.cart = storedCart ? JSON.parse(storedCart) : [];
-    this.cart = store.checkoutCart;
+    // this.cart = store.checkoutCart;
 
     const restaurantSlug = this.$route.params.slug;
     axios
@@ -37,17 +38,41 @@ export default {
   },
   methods: {
     addToCart(index) {
-      store.counter++;
       const dishToAdd = this.restaurant.dishes[index];
-      const existingCartItem = this.cart.find(
-        (item) => item.name === dishToAdd.name
-      );
-      if (existingCartItem) {
-        existingCartItem.quantity++;
+      const existingRestaurant =
+        this.cart.length > 0 ? this.cart[0].restaurant : null;
+
+      if (!existingRestaurant || existingRestaurant === this.restaurant.name) {
+        const existingCartItem = this.cart.find(
+          (item) => item.name === dishToAdd.name
+        );
+        if (existingCartItem) {
+          existingCartItem.quantity++;
+        } else {
+          this.cart.push({
+            ...dishToAdd,
+            quantity: 1,
+            restaurant: this.restaurant.name,
+          });
+        }
+        this.saveCart();
       } else {
-        this.cart.push({ ...dishToAdd, quantity: 1 });
+        this.showErrorModal = true;
+        console.log(this.showErrorModal);
       }
+    },
+
+    closeModal() {
+      this.showErrorModal = false;
+    },
+
+    clearCart() {
+      // Pulisci il carrello
+      this.cart = [];
       this.saveCart();
+
+      // Chiudi la modale di errore
+      this.showErrorModal = false;
     },
 
     removeToCart(index) {
@@ -199,6 +224,36 @@ export default {
             >
             <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- modale per errore ordine -->
+
+  <div
+    class="modal modal-cart"
+    :class="{ show: showErrorModal }"
+    v-if="showErrorModal"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Error</h5>
+          <button type="button" class="btn-close" @click="closeModal"></button>
+        </div>
+        <div class="modal-body">
+          <p>
+            The cart contains items from a different restaurant. Do you want to
+            clear the cart and continue with the new order?
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" @click="closeModal">
+            Close
+          </button>
+          <button type="button" class="btn btn-primary" @click="clearCart()">
+            Clear Cart
+          </button>
         </div>
       </div>
     </div>
@@ -430,6 +485,20 @@ export default {
   &:hover {
     opacity: 1;
     transition: opacity linear 0.1s;
+  }
+}
+.modal-cart {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .show {
+    display: block !important;
   }
 }
 </style>
