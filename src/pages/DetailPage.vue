@@ -19,7 +19,12 @@ export default {
 
   created() {
     const storedCart = localStorage.getItem("cart");
-    this.cart = storedCart ? JSON.parse(storedCart) : [];
+    store.checkoutCart = storedCart ? JSON.parse(storedCart) : [];
+    store.counter = 0;
+    for (let i = 0; i < store.checkoutCart.length; i++) {
+      let currentItem = store.checkoutCart[i];
+      store.counter += currentItem.quantity;
+    }
     // this.cart = store.checkoutCart;
 
     const restaurantSlug = this.$route.params.slug;
@@ -108,6 +113,7 @@ export default {
         const existingCartItem = this.cart.find(
           (item) => item.name === dishToAdd.name
         );
+        store.counter++;
         if (existingCartItem) {
           existingCartItem.quantity++;
         } else {
