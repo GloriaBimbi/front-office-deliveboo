@@ -197,6 +197,7 @@ export default {
 
   <div
     class="offcanvas offcanvas-end w-50"
+    data-bs-backdrop="false"
     tabindex="-1"
     id="offcanvasExample"
     aria-labelledby="offcanvasExampleLabel"
