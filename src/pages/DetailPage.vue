@@ -12,6 +12,8 @@ export default {
       cart: JSON.parse(localStorage.getItem("cart")) || [],
       error: "",
       showErrorModal: false,
+      cartRestaurant: "",
+      cartRestaurantSlug: "",
     };
   },
 
@@ -42,12 +44,72 @@ export default {
       });
   },
   methods: {
+    // method to increment number on cart icon in header
+    basketIncrementCounter() {
+      store.counter++;
+    },
+
+    // MODAL
+    // method to open dish modal
+    handleModalOpening(dish) {
+      store.selectedDish = dish;
+      const selectedDish = store.selectedDish;
+
+      //controllo che l'indice esista e nel caso collego la modale cliccata con le sue chiavi nello store
+      if (store.dishes.includes(selectedDish)) {
+        store.modal.name = selectedDish.name;
+        store.modal.image = selectedDish.image;
+        store.modal.description = selectedDish.description;
+        store.modal.price = selectedDish.price;
+        store.modal.ingredients_list = selectedDish.ingredients_list;
+        //faccio in modo che cliccando su una card si apra la modale
+        store.modal.show = true;
+        console.log(store.modal);
+      }
+    },
+
+    // method to close dish modal
+    closeModal() {
+      this.showErrorModal = false;
+    },
+
+    // CART
+    // method to transform the title of the restaurant whose dishes are in the cart into a slug
+    stringToSlug(str) {
+      str = str.replace(/^\s+|\s+$/g, ""); // Trim
+      str = str.toLowerCase();
+
+      // remove undesiderized characters
+      var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+      var to = "aaaaeeeeiiiioooouuuunc------";
+      for (var i = 0, l = from.length; i < l; i++) {
+        str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
+      }
+
+      str = str
+        .replace(/[^a-z0-9 -]/g, "") // revove non halfabetic characters
+        .replace(/\s+/g, "-") // sonstitute spaces with -
+        .replace(/-+/g, "-"); // remove duplicate -
+      return str;
+    },
+
+    // method to convert the restaurant name into a slug and redirects the page
+    goToRestaurant() {
+      const url = `/restaurant/${this.cartRestaurantSlug}`;
+      window.location.href = url;
+    },
+
+    // method to save the cart in local storage if the selected dish is owned by the right restaurant
     addToCart(index) {
       const dishToAdd = this.restaurant.dishes[index];
-      const existingRestaurant =
+      this.cartRestaurant =
         this.cart.length > 0 ? this.cart[0].restaurant : null;
+      console.log(this.cartRestaurant);
 
-      if (!existingRestaurant || existingRestaurant === this.restaurant.name) {
+      if (
+        !this.cartRestaurant ||
+        this.cartRestaurant === this.restaurant.name
+      ) {
         const existingCartItem = this.cart.find(
           (item) => item.name === dishToAdd.name
         );
@@ -66,21 +128,20 @@ export default {
         this.showErrorModal = true;
         console.log(this.showErrorModal);
       }
+      this.cartRestaurantSlug = this.stringToSlug(this.cartRestaurant);
+      console.log(this.cartRestaurantSlug);
     },
 
-    closeModal() {
-      this.showErrorModal = false;
-    },
-
+    // method to clear the cart
     clearCart() {
-      // Pulisci il carrello
       this.cart = [];
       this.saveCart();
 
-      // Chiudi la modale di errore
+      // close modal
       this.showErrorModal = false;
     },
 
+    // method to remove the selected dish from the cart
     removeToCart(index) {
       store.counter--;
       if (this.cart[index]) {
@@ -93,6 +154,7 @@ export default {
       }
     },
 
+    // method to calculate the total price of the selected dishes in the cart
     calculateTotalPrice() {
       let totalPrice = 0;
       for (const item of this.cart) {
@@ -101,28 +163,9 @@ export default {
       return totalPrice.toFixed(2);
     },
 
+    // method to save the cart in local storage
     saveCart() {
       localStorage.setItem("cart", JSON.stringify(this.cart));
-    },
-
-    basketIncrementCounter() {
-      store.counter++;
-    },
-    handleModalOpening(dish) {
-      store.selectedDish = dish;
-      const selectedDish = store.selectedDish;
-
-      //controllo che l'indice esista e nel caso collego la modale cliccata con le sue chiavi nello store
-      if (store.dishes.includes(selectedDish)) {
-        store.modal.name = selectedDish.name;
-        store.modal.image = selectedDish.image;
-        store.modal.description = selectedDish.description;
-        store.modal.price = selectedDish.price;
-        store.modal.ingredients_list = selectedDish.ingredients_list;
-        //faccio in modo che cliccando su una card si apra la modale
-        store.modal.show = true;
-        console.log(store.modal);
-      }
     },
   },
 };
@@ -262,7 +305,7 @@ export default {
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" @click="closeModal">
-            Close
+            <span @click="goToRestaurant()">Close</span>
           </button>
           <button type="button" class="btn btn-primary" @click="clearCart()">
             Clear Cart
