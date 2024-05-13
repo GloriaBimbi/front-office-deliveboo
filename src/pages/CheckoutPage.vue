@@ -1,7 +1,7 @@
 <script>
 import { store } from "../store";
 export default {
-  props: { restaurant: Object },
+  //   props: { restaurant: Object },
 
   data() {
     return {
@@ -200,7 +200,7 @@ export default {
 }
 .order-details {
   .cart-list {
-    height: 700px;
+    max-height: 700px;
     overflow: auto;
     padding: 0;
     list-style-type: none;

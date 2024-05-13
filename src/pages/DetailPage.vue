@@ -17,7 +17,7 @@ export default {
 
   created() {
     const storedCart = localStorage.getItem("cart");
-    this.cart = storedCart ? JSON.parse(storedCart) : [];
+    store.checkoutCart = storedCart ? JSON.parse(storedCart) : [];
     // this.cart = store.checkoutCart;
 
     const restaurantSlug = this.$route.params.slug;
