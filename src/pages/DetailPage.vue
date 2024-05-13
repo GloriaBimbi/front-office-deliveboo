@@ -17,6 +17,7 @@ export default {
   created() {
     const storedCart = localStorage.getItem("cart");
     this.cart = storedCart ? JSON.parse(storedCart) : [];
+    this.cart = store.checkoutCart;
 
     const restaurantSlug = this.$route.params.slug;
     axios
@@ -219,7 +220,9 @@ export default {
         <div class="total-price">
           <span>Total price: $ {{ calculateTotalPrice() }}</span>
           <div class="btn-wrapper d-flex">
-            <div class="checkout-btn">Check-out</div>
+            <router-link :to="{ name: 'checkout' }" class="checkout-btn"
+              >Check-out</router-link
+            >
             <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
           </div>
         </div>

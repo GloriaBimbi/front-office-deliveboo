@@ -22,4 +22,5 @@ export const store = reactive({
   },
   selectedDish: null,
   error: false,
+  checkoutCart: [],
 });
