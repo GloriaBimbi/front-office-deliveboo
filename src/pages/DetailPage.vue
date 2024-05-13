@@ -168,8 +168,17 @@ export default {
           </div>
           <div class="dish-purchase ms-auto d-flex flex-column">
             <h3 class="dish-price">$ {{ dish.price }}</h3>
-            <div class="add-to-cart" @click="addToCart(index)">
-              <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
+            <div class="control-wrapper d-flex gap-2 mt-auto">
+              <div
+                class="remove-to-cart"
+                @click="removeToCart(index)"
+                v-if="store.counter > 0"
+              >
+                <h2><i class="cart-icon" :class="['fas', 'fa-minus']"></i></h2>
+              </div>
+              <div class="add-to-cart" @click="addToCart(index)">
+                <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
+              </div>
             </div>
           </div>
         </li>
@@ -216,10 +225,7 @@ export default {
         <div class="total-price">
           <span>Total price: $ {{ calculateTotalPrice() }}</span>
           <div class="btn-wrapper d-flex">
-            <router-link
-              :to="{ name: 'checkout' }"
-              class="checkout-btn"
-              data-bs-dismiss="offcanvas"
+            <router-link :to="{ name: 'checkout' }" class="checkout-btn"
               >Check-out</router-link
             >
             <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
@@ -440,6 +446,7 @@ export default {
     p {
       margin-top: auto;
       margin-bottom: 0;
+      width: 90%;
     }
   }
 
@@ -451,7 +458,8 @@ export default {
       padding-top: 0.5rem;
       font-size: 1.67rem;
     }
-    .add-to-cart {
+    .add-to-cart,
+    .remove-to-cart {
       width: 75px;
       margin-top: auto;
       display: flex;
@@ -465,6 +473,14 @@ export default {
       border-radius: 50%;
       &:hover {
         background-color: #23a7ff;
+      }
+    }
+
+    .remove-to-cart {
+      background-color: white;
+      color: red;
+      &:hover {
+        background-color: rgb(244, 244, 244);
       }
     }
   }

@@ -10,7 +10,7 @@ export default {
       store,
       restaurants: [],
       types: [],
-      pagination: store.pagination,
+      pagination: [],
     };
   },
 
@@ -35,15 +35,21 @@ export default {
           },
         })
         .then((response) => {
-          // console.log(response.data.result);
-          store.filterRestaurants = response.data.result;
+          console.log(response.data.result.data);
+          console.log(response.data.result.links);
+          if (response.data.result.link) {
+            store.restaurants = response.data.result.data;
+            this.pagination = response.data.result.links;
+          } else {
+            this.fetchRestaurant();
+          }
         });
     },
 
     clearFilters() {
       let types = this.activeTypes;
       this.types.forEach((type) => (type.active = false));
-      store.filterRestaurants = store.restaurants;
+      this.fetchRestaurant();
     },
 
     fetchTypes() {
@@ -135,24 +141,16 @@ export default {
     <section id="restaurant-list">
       <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-5">
         <restaurant-card
-          v-for="restaurant in store.filterRestaurants"
-          :restaurant="restaurant"
-          :key="restaurant.id"
-          v-if="store.filterRestaurants"
-        />
-        <restaurant-card
           v-for="restaurant in store.restaurants"
           :restaurant="restaurant"
           :key="restaurant.id"
-          v-else
         />
       </div>
       <!-- paginator -->
-      <div class="mt-3">
-        <ui-pagination
-          @change-page="fetchRestaurant"
-          :pagination="pagination"
-        ></ui-pagination>
+      <div class="mt-3" v-if="pagination.length > 3">
+        <ui-pagination @change-page="fetchRestaurant" :pagination="pagination">
+          ></ui-pagination
+        >
       </div>
     </section>
 
