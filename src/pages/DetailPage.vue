@@ -9,11 +9,15 @@ export default {
     return {
       store,
       restaurant: [],
+      cart: JSON.parse(localStorage.getItem("cart")) || [],
       error: "",
     };
   },
 
   created() {
+    const storedCart = localStorage.getItem("cart");
+    this.cart = storedCart ? JSON.parse(storedCart) : [];
+
     const restaurantSlug = this.$route.params.slug;
     axios
       .get(api.baseUrl + `restaurants/${restaurantSlug}`)
@@ -31,6 +35,42 @@ export default {
       });
   },
   methods: {
+    addToCart(index) {
+      const dishToAdd = this.restaurant.dishes[index];
+      const existingCartItem = this.cart.find(
+        (item) => item.name === dishToAdd.name
+      );
+      if (existingCartItem) {
+        existingCartItem.quantity++;
+      } else {
+        this.cart.push({ ...dishToAdd, quantity: 1 });
+      }
+      this.saveCart();
+    },
+
+    removeToCart(index) {
+      if (this.cart[index]) {
+        if (this.cart[index].quantity > 1) {
+          this.cart[index].quantity--;
+        } else {
+          this.cart.splice(index, 1);
+        }
+        this.saveCart();
+      }
+    },
+
+    calculateTotalPrice() {
+      let totalPrice = 0;
+      for (const item of this.cart) {
+        totalPrice += item.price * item.quantity;
+      }
+      return totalPrice.toFixed(2);
+    },
+
+    saveCart() {
+      localStorage.setItem("cart", JSON.stringify(this.cart));
+    },
+
     basketIncrementCounter() {
       store.counter++;
     },
@@ -72,7 +112,6 @@ export default {
     >
       <i class="fa-solid fa-shopping-cart"></i>
     </a>
-    <!-- <a class="btn btn-primary" href="{{ api.baseUrl }}">Go Back</a> -->
     <a @click="$router.go(-1)" class="btn back-button mb-2"
       ><i class="fa-solid fa-arrow-rotate-left"></i> Back to Home</a
     >
@@ -89,7 +128,10 @@ export default {
     <div v-if="!store.error" class="wrapper-menu">
       <h2 class="text-white">Menù</h2>
       <ul class="mx-0 px-0">
-        <li class="d-flex gap-2 text-white" v-for="dish in restaurant.dishes">
+        <li
+          class="d-flex gap-2 text-white"
+          v-for="(dish, index) in restaurant.dishes"
+        >
           <div @click="handleModalOpening(dish)" class="img-wrapper">
             <img :src="dish.image" alt="" />
           </div>
@@ -102,7 +144,7 @@ export default {
           </div>
           <div class="dish-purchase ms-auto d-flex flex-column">
             <h3 class="dish-price">$ {{ dish.price }}</h3>
-            <div class="add-to-cart" @click="basketIncrementCounter()">
+            <div class="add-to-cart" @click="addToCart(index)">
               <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
             </div>
           </div>
@@ -151,26 +193,31 @@ export default {
     </div>
     <div class="offcanvas-body d-flex flex-column">
       <ul class="cart-list">
-        <li class="cart-list-item">
+        <li class="cart-list-item" v-for="(dish, index) in cart" :key="index">
           <div class="img-dish-wrapper">
-            <img src="https://picsum.photos/200/300" alt="" />
+            <img :src="dish.image" alt="" />
           </div>
           <div class="primary-info">
-            <h5>Dish name</h5>
-            <p>price:</p>
+            <h5>
+              {{ dish.name }}
+            </h5>
+            <p>price: ${{ dish.price }}</p>
+            <p>Quantity: {{ dish.quantity }}</p>
           </div>
           <div class="quantity-info">
             <p>x</p>
             <div class="quantity-wrapper">
-              <div class="quantity-btn minus">-</div>
-              <div class="quantity-btn plus">+</div>
+              <div class="quantity-btn minus" @click="removeToCart(index)">
+                -
+              </div>
+              <div class="quantity-btn plus" @click="addToCart(index)">+</div>
             </div>
           </div>
         </li>
       </ul>
       <div class="checkout-wrapper mt-auto">
         <div class="total-price">
-          <span>Total price: $ 0</span>
+          <span>Total price: $ {{ calculateTotalPrice() }}</span>
           <div class="btn-wrapper d-flex">
             <div class="checkout-btn">Check-out</div>
             <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
