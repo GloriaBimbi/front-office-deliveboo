@@ -16,21 +16,15 @@ export default {
         <img src="../assets/Group-30.png" alt="logo" />
       </div>
       <div class="d-flex gap-3">
-        <div class="basket-container">
-          <div class="shooping-chart">
-            <i class="cart-icon" :class="['fas', 'fa-cart-shopping']"></i>
-          </div>
-          <div class="conunter">{{ store.counter }}</div>
-        </div>
         <a
           href="http://127.0.0.1:8000/login"
-          class="btn btn-outline-success"
+          class="btn btn-outline-primary"
           type="submit"
           >Log in</a
         >
         <a
           href="http://127.0.0.1:8000/register"
-          class="btn btn-outline-success"
+          class="btn btn-outline-primary"
           type="submit"
           >Register</a
         >

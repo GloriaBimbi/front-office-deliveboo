@@ -37,6 +37,7 @@ export default {
   },
   methods: {
     addToCart(index) {
+      store.counter++;
       const dishToAdd = this.restaurant.dishes[index];
       const existingCartItem = this.cart.find(
         (item) => item.name === dishToAdd.name
@@ -50,6 +51,7 @@ export default {
     },
 
     removeToCart(index) {
+      store.counter--;
       if (this.cart[index]) {
         if (this.cart[index].quantity > 1) {
           this.cart[index].quantity--;
@@ -112,6 +114,9 @@ export default {
       aria-controls="offcanvasExample"
     >
       <i class="fa-solid fa-shopping-cart"></i>
+      <div class="counter" v-if="store.counter > 0">
+        {{ store.counter }}
+      </div>
     </a>
     <a @click="$router.go(-1)" class="btn back-button mb-2"
       ><i class="fa-solid fa-arrow-rotate-left"></i> Back to Home</a
@@ -203,10 +208,9 @@ export default {
               {{ dish.name }}
             </h5>
             <p>price: ${{ dish.price }}</p>
-            <p>Quantity: {{ dish.quantity }}</p>
           </div>
           <div class="quantity-info">
-            <p>x</p>
+            <p>x{{ dish.quantity }}</p>
             <div class="quantity-wrapper">
               <div class="quantity-btn minus" @click="removeToCart(index)">
                 -
@@ -220,7 +224,10 @@ export default {
         <div class="total-price">
           <span>Total price: $ {{ calculateTotalPrice() }}</span>
           <div class="btn-wrapper d-flex">
-            <router-link :to="{ name: 'checkout' }" class="checkout-btn"
+            <router-link
+              :to="{ name: 'checkout' }"
+              class="checkout-btn"
+              data-bs-dismiss="offcanvas"
               >Check-out</router-link
             >
             <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
@@ -237,11 +244,12 @@ export default {
   .open-cart-btn {
     position: fixed;
     top: 100px;
-    right: 1rem;
+    right: 1.5rem;
+    font-size: 1.25rem;
 
     background-color: white;
     aspect-ratio: 1 / 1;
-    height: 35px;
+    height: 45px;
     border-radius: 50px;
     display: flex;
     justify-content: center;
@@ -251,6 +259,20 @@ export default {
     &:hover {
       scale: 1.5;
       transition: 0.25s;
+    }
+    .counter {
+      background-color: orange;
+      color: white;
+      position: absolute;
+      right: -0.5rem;
+      top: -0.5rem;
+      aspect-ratio: 1 / 1;
+      height: 1.5rem;
+      border-radius: 50%;
+      border: 1px solid white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
   }
 
