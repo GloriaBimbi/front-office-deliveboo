@@ -8,7 +8,6 @@ export default {
   data() {
     return {
       store,
-      restaurants: [],
       types: [],
       pagination: [],
     };
@@ -24,7 +23,6 @@ export default {
       axios.get(endpoint).then((response) => {
         store.restaurants = response.data.data;
         this.pagination = response.data.links;
-        console.log(response.data.links);
       });
     },
     fetchFilterRestaurant() {
@@ -155,10 +153,10 @@ export default {
     </section>
 
     <!-- braintree payment system  -->
-    <div id="dropin-container"></div>
+    <!-- <div id="dropin-container"></div>
     <button id="submit-button" class="button button--small button--green">
       Purchase
-    </button>
+    </button> -->
   </div>
 </template>
 
