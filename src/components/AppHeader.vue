@@ -12,7 +12,8 @@ export default {
 <template>
   <nav class="navbar">
     <div class="container">
-      <div class="container-logo">
+      <!-- go back to homepage on click -->
+      <div @click="$router.replace({ path: '/' })" class="container-logo">
         <img src="../assets/Group-30.png" alt="logo" />
       </div>
       <div class="d-flex gap-3">

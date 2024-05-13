@@ -185,7 +185,8 @@ export default {
         {{ store.counter }}
       </div>
     </a>
-    <a @click="$router.go(-1)" class="btn back-button mb-2"
+    <!-- go back to homepage on click -->
+    <a @click="$router.replace({ path: '/' })" class="btn back-button mb-2"
       ><i class="fa-solid fa-arrow-rotate-left"></i> Back to Home</a
     >
     <div class="row mb-5">
