@@ -78,13 +78,6 @@ export default {
     },
     handleModalOpening(dish) {
       store.selectedDish = dish;
-      // console.log(store.selectedDish);
-      // for (let i = 0; i < store.dishes.length; i++) {
-      //   if (store.dishes[i] === store.selectedDish) {
-      //     return store.selectedDish;
-      //   }
-      //   console.log(store.selectedDish);
-      // }
       const selectedDish = store.selectedDish;
 
       //controllo che l'indice esista e nel caso collego la modale cliccata con le sue chiavi nello store
@@ -168,26 +161,6 @@ export default {
     <div v-if="store.error">
       <h2 class="error-text">{{ this.error }}</h2>
     </div>
-    <!-- <div class="row g-2">
-      <div class="col-3" v-for="dish in restaurant.dishes">
-        <div class="card bg-card h-100">
-          <img :src="dish.image" class="card-img-top" alt="..." />
-          <div class="card-body">
-            <h5 class="card-title">{{ dish.name }}</h5>
-            <p class="card-text">
-              {{ dish.description }}
-            </p>
-            <a href="#" class="btn btn-primary">Details</a>
-            <a
-              href="#"
-              class="btn btn-success mx-3"
-              @click="basketIncrementCounter()"
-              >+ Order</a
-            >
-          </div>
-        </div>
-      </div>
-    </div> -->
   </div>
 
   <div
@@ -198,12 +171,6 @@ export default {
   >
     <div class="offcanvas-header">
       <h5 class="offcanvas-title" id="offcanvasExampleLabel">Shopping cart</h5>
-      <!-- <button
-        type="button"
-        class="btn-close"
-        data-bs-dismiss="offcanvas"
-        aria-label="Close"
-      ></button> -->
     </div>
     <div class="offcanvas-body d-flex flex-column">
       <ul class="cart-list">
