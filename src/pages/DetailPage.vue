@@ -46,6 +46,7 @@ export default {
         const existingCartItem = this.cart.find(
           (item) => item.name === dishToAdd.name
         );
+        store.counter++;
         if (existingCartItem) {
           existingCartItem.quantity++;
         } else {
