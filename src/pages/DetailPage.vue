@@ -105,7 +105,6 @@ export default {
       );
 
       if (!dishToAdd) {
-        console.error(`Dish with ID ${dishId} not found.`);
         return;
       }
       this.cartRestaurant =
@@ -127,8 +126,8 @@ export default {
             quantity: 1,
             restaurant: this.restaurant.name,
           });
-          store.counter++;
         }
+        store.counter++;
         this.saveCart();
       } else {
         this.showErrorModal = true;
@@ -146,18 +145,24 @@ export default {
     },
 
     // method to remove the selected dish from the cart
-    removeToCart(index) {
-      store.counter--;
-      if (this.cart[index]) {
+    isDishInCart(dishId) {
+      return this.cart.some((item) => item.id === dishId);
+    },
+
+    // Metodo per rimuovere un piatto dal carrello
+    removeToCart(dishId) {
+      const index = this.cart.findIndex((item) => item.id === dishId);
+      if (index !== -1) {
         if (this.cart[index].quantity > 1) {
           this.cart[index].quantity--;
         } else {
           this.cart.splice(index, 1);
         }
+        // Diminuiamo il contatore solo se un piatto è effettivamente rimosso dal carrello
+        store.counter--;
         this.saveCart();
       }
     },
-
     // method to calculate the total price of the selected dishes in the cart
     calculateTotalPrice() {
       let totalPrice = 0;
@@ -225,8 +230,8 @@ export default {
             <div class="control-wrapper d-flex gap-2 mt-auto">
               <div
                 class="remove-to-cart"
-                @click="removeToCart(index)"
-                v-if="store.counter > 0"
+                @click="removeToCart(dish.id)"
+                v-if="store.counter > 0 && isDishInCart(dish.id)"
               >
                 <h2><i class="cart-icon" :class="['fas', 'fa-minus']"></i></h2>
               </div>
@@ -268,7 +273,7 @@ export default {
           <div class="quantity-info">
             <p>x{{ dish.quantity }}</p>
             <div class="quantity-wrapper">
-              <div class="quantity-btn minus" @click="removeToCart(index)">
+              <div class="quantity-btn minus" @click="removeToCart(dish.id)">
                 -
               </div>
               <div class="quantity-btn plus" @click="addToCart(dish.id)">+</div>
