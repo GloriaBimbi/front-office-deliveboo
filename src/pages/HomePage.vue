@@ -35,7 +35,7 @@ export default {
         .then((response) => {
           console.log(response.data.result.data);
           console.log(response.data.result.links);
-          if (response.data.result.link) {
+          if (!response.data.result.link) {
             store.restaurants = response.data.result.data;
             this.pagination = response.data.result.links;
           } else {
