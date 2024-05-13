@@ -141,6 +141,7 @@ export default {
       this.saveCart();
 
       // close modal
+      store.counter = 0;
       this.showErrorModal = false;
     },
 
