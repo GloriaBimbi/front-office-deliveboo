@@ -100,36 +100,66 @@ export default {
     },
 
     // method to save the cart in local storage if the selected dish is owned by the right restaurant
-    addToCart(index) {
-      const dishToAdd = this.restaurant.dishes[index];
-      this.cartRestaurant =
-        this.cart.length > 0 ? this.cart[0].restaurant : null;
-      console.log(this.cartRestaurant);
+    // addToCart(index) {
+    //   const dishToAdd = this.restaurant.dishes[index];
+    //   this.cartRestaurant =
+    //     this.cart.length > 0 ? this.cart[0].restaurant : null;
+    //   console.log(this.cartRestaurant);
 
-      if (
-        !this.cartRestaurant ||
-        this.cartRestaurant === this.restaurant.name
-      ) {
-        const existingCartItem = this.cart.find(
-          (item) => item.name === dishToAdd.name
-        );
-        store.counter++;
-        if (existingCartItem) {
-          existingCartItem.quantity++;
-        } else {
-          this.cart.push({
-            ...dishToAdd,
-            quantity: 1,
-            restaurant: this.restaurant.name,
-          });
-        }
-        this.saveCart();
-      } else {
-        this.showErrorModal = true;
-        console.log(this.showErrorModal);
+    //   if (
+    //     !this.cartRestaurant ||
+    //     this.cartRestaurant === this.restaurant.name
+    //   ) {
+    //     const existingCartItem = this.cart.find(
+    //       (item) => item.name === dishToAdd.name
+    //     );
+    //     store.counter++;
+    //     if (existingCartItem) {
+    //       existingCartItem.quantity++;
+    //     } else {
+    //       this.cart.push({
+    //         ...dishToAdd,
+    //         quantity: 1,
+    //         restaurant: this.restaurant.name,
+    //       });
+    //     }
+    //     this.saveCart();
+    //   } else {
+    //     this.showErrorModal = true;
+    //     console.log(this.showErrorModal);
+    //   }
+    //   this.cartRestaurantSlug = this.stringToSlug(this.cartRestaurant);
+    //   console.log(this.cartRestaurantSlug);
+    // },
+
+    addToCart(dishId) {
+      const dishToAdd = this.restaurant.dishes.find(
+        (dish) => dish.id === dishId
+      );
+      // Rimuovi il codice inutile per la verifica del ristorante, puoi gestirlo direttamente nella logica del tuo carrello
+
+      if (!dishToAdd) {
+        // Se il piatto non esiste, esce dalla funzione
+        return;
       }
-      this.cartRestaurantSlug = this.stringToSlug(this.cartRestaurant);
-      console.log(this.cartRestaurantSlug);
+
+      const existingCartItemIndex = this.cart.findIndex(
+        (item) => item.id === dishToAdd.id
+      );
+      if (existingCartItemIndex !== -1) {
+        // Se il piatto è già presente nel carrello, incrementa la quantità
+        this.cart[existingCartItemIndex].quantity++;
+      } else {
+        // Altrimenti, aggiungi il piatto al carrello
+        this.cart.push({
+          ...dishToAdd,
+          quantity: 1,
+          restaurant: this.restaurant.name,
+        });
+      }
+      store.counter++;
+      this.saveCart();
+      // Non è necessario gestire il resto del codice relativo alla gestione del ristorante e alla visualizzazione del modal di errore
     },
 
     // method to clear the cart
@@ -226,7 +256,7 @@ export default {
               >
                 <h2><i class="cart-icon" :class="['fas', 'fa-minus']"></i></h2>
               </div>
-              <div class="add-to-cart" @click="addToCart(index)">
+              <div class="add-to-cart" @click="addToCart(dish.id)">
                 <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
               </div>
             </div>
@@ -267,7 +297,7 @@ export default {
               <div class="quantity-btn minus" @click="removeToCart(index)">
                 -
               </div>
-              <div class="quantity-btn plus" @click="addToCart(index)">+</div>
+              <div class="quantity-btn plus" @click="addToCart(dish.id)">+</div>
             </div>
           </div>
         </li>
