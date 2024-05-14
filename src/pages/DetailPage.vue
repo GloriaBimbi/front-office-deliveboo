@@ -9,7 +9,8 @@ export default {
       store,
       restaurant: [],
       error: "",
-      showErrorModal: false,
+      showErrorModal: { visible: false, id: "" },
+      // cartRestaurant: "",
       cartRestaurantSlug: "",
       newRestaurant: "",
     };
@@ -72,7 +73,7 @@ export default {
 
     // method to close dish modal
     closeModal() {
-      this.showErrorModal = false;
+      this.showErrorModal.visible = false;
     },
 
     // CART
@@ -103,6 +104,7 @@ export default {
 
     // method to add item to cart
     addToCart(dishId) {
+      console.log(dishId);
       const dishToAdd = this.restaurant.dishes.find(
         (dish) => dish.id === dishId
       );
@@ -133,9 +135,8 @@ export default {
         store.counter++;
         this.saveCart();
       } else {
-        this.showErrorModal = true;
-        this.newRestaurant = store.cartRestaurant;
-        return this.newRestaurant;
+        this.showErrorModal.visible = true;
+        this.showErrorModal.id = dishId;
       }
 
       this.cartRestaurantSlug = this.stringToSlug(store.cartRestaurant);
@@ -215,12 +216,26 @@ export default {
       for (const item of store.cart) {
         totalPrice += item.price * item.quantity;
       }
-      return totalPrice.toFixed(2);
+      return this.formatPrice(totalPrice);
     },
 
     // method to save the cart in local storage
     saveCart() {
       localStorage.setItem("cart", JSON.stringify(store.cart));
+    },
+    // method to convert price
+    formatPrice(price) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+      }).format(price);
+    },
+
+    resetCartAdd(dishId) {
+      console.log(dishId);
+      this.clearCart();
+      this.addToCart(dishId.id);
     },
   },
 };
@@ -310,7 +325,7 @@ export default {
             <p>{{ dish.description }}</p>
           </div>
           <div class="dish-purchase ms-auto d-flex flex-column">
-            <h3 class="dish-price">$ {{ dish.price }}</h3>
+            <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
             <div class="control-wrapper d-flex gap-2 mt-auto">
               <div
                 class="remove-to-cart"
@@ -324,6 +339,48 @@ export default {
               </div>
             </div>
           </div>
+          <!-- modale per errore ordine -->
+
+          <div
+            class="modal modal-cart"
+            :class="{ show: showErrorModal.visible }"
+            v-if="showErrorModal && dish.id == showErrorModal.id"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Error</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    @click="closeModal"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    The cart contains items from a different restaurant. Do you
+                    want to clear the cart and continue with the new order?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="closeModal"
+                  >
+                    <span @click="goToRestaurant()">Close</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="resetCartAdd(dish)"
+                  >
+                    Clear Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </li>
       </ul>
     </div>
@@ -332,6 +389,7 @@ export default {
     </div>
   </div>
 
+  <!-- Offcanvas -->
   <div
     class="offcanvas offcanvas-end w-50"
     data-bs-backdrop="false"
@@ -356,7 +414,7 @@ export default {
             <h5>
               {{ dish.name }}
             </h5>
-            <p>price: ${{ dish.price }}</p>
+            <p>price: {{ formatPrice(dish.price) }}</p>
           </div>
           <div class="quantity-info">
             <p>x{{ dish.quantity }}</p>
@@ -369,9 +427,19 @@ export default {
           </div>
         </li>
       </ul>
+      <div class="col-2">
+        <button
+          v-if="store.cart.length >= 1"
+          type="button"
+          class="btn btn-danger"
+          @click="clearCart()"
+        >
+          Reset Order
+        </button>
+      </div>
       <div class="checkout-wrapper mt-auto">
         <div class="total-price">
-          <span>Total price: $ {{ calculateTotalPrice() }}</span>
+          <span>Total price: {{ calculateTotalPrice() }}</span>
           <div class="btn-wrapper d-flex">
             <router-link :to="{ name: 'checkout' }" class="checkout-btn"
               >Check-out</router-link

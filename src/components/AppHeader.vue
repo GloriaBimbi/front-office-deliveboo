@@ -17,16 +17,10 @@ export default {
         <img src="../assets/Group-30.png" alt="logo" />
       </div>
       <div class="d-flex gap-3">
-        <a
-          href="http://127.0.0.1:8000/login"
-          class="btn btn-outline-primary"
-          type="submit"
+        <a href="http://127.0.0.1:8000/login" class="button" type="submit"
           >Log in</a
         >
-        <a
-          href="http://127.0.0.1:8000/register"
-          class="btn btn-outline-primary"
-          type="submit"
+        <a href="http://127.0.0.1:8000/register" class="button" type="submit"
           >Register</a
         >
       </div>
@@ -36,12 +30,23 @@ export default {
 
 <style lang="scss">
 .navbar {
-  background-color: #002238;
+  background: rgb(12, 22, 74);
   .container-logo {
     width: 100px;
     padding: 10px;
     img {
       width: 100%;
+    }
+  }
+  .button {
+    border-radius: 0;
+    padding: 0.5rem 2rem;
+    border: 1px solid #0073de;
+    color: white;
+    text-decoration: none;
+    &:hover {
+      // border: none;
+      background-color: #0073de;
     }
   }
   .basket-container {

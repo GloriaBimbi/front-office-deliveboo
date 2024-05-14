@@ -10,6 +10,7 @@ export default {
       store,
       types: [],
       pagination: [],
+      filters: [],
     };
   },
 
@@ -47,6 +48,7 @@ export default {
     clearFilters() {
       let types = this.activeTypes;
       this.types.forEach((type) => (type.active = false));
+      this.filters = [];
       this.fetchRestaurant();
     },
 
@@ -60,7 +62,29 @@ export default {
 
     handleTypeClick(type) {
       type.active = !type.active;
+
+      if (type.active) {
+        // Se il tipo è stato appena attivato, aggiungilo all'array filters
+        if (!this.filters.includes(type.id)) {
+          this.filters.push(type.id);
+        }
+      } else {
+        // Se il tipo è stato disattivato, rimuovilo dall'array filters
+        let index = this.filters.indexOf(type.id);
+        if (index !== -1) {
+          this.filters.splice(index, 1);
+        }
+      }
+
       this.fetchFilterRestaurant();
+    },
+
+    getTypeName(typeId) {
+      console.log(this.filters);
+      for (let type of this.filters) {
+        let type = this.types.find((t) => t.id === typeId);
+        return type ? type.name : ""; // Restituisce il nome del tipo se trovato, altrimenti una stringa vuota
+      }
     },
   },
 
@@ -85,16 +109,23 @@ export default {
 </script>
 
 <template>
-  <div class="container">
-    <section class="jumbo">
-      <h1></h1>
-    </section>
+  <section class="jumbo">
+    <img src="../../public/take-away-animate.svg" alt="" />
 
+    <div class="catch-phrase">
+      <h1>Deliveboo</h1>
+      <p>
+        "Consegniamo il gusto direttamente alla tua porta: il cibo che desideri,
+        quando lo desideri."
+      </p>
+    </div>
+  </section>
+  <div class="container">
     <!-- types filter -->
     <section id="type-filter">
-      <div class="row g-2">
-        <div class="col-1" v-for="types in types">
-          <div class="card bg-card h-100" :class="types.active ? 'active' : ''">
+      <div class="row g-3">
+        <div class="col-3 col-md-2 col-lg-1" v-for="types in types">
+          <div class="card h-100" :class="types.active ? 'active' : ''">
             <div class="card-top">
               <div class="card-image">
                 <img
@@ -114,30 +145,30 @@ export default {
 
     <!-- filter section -->
 
-    <div class="filter-section container">
-      <div class="row">
-        <div class="col-6 type-col">
+    <div class="filter-section container" v-if="filters.length > 0">
+      <div class="row py-3">
+        <div class="col type-col">
           <h3>Your filters:</h3>
           <div
-            v-for="(selectedType, index) in activeTypes"
+            v-for="(selectedType, index) in filters"
             :key="selectedType.id"
-            class="filter-item"
+            class="filter-item ms-2"
           >
             <p>
-              {{ selectedType.name
-              }}<span v-if="index < activeTypes.length - 1">,&nbsp;</span>
+              {{ getTypeName(selectedType) }}
+              <span v-if="index < filters.length - 1">,&nbsp;</span>
             </p>
           </div>
         </div>
-        <div class="col-1">
-          <button class="reset-button" @click="clearFilters()">reset</button>
+        <div class="col button-col">
+          <button class="button" @click="clearFilters()">reset</button>
         </div>
       </div>
     </div>
 
     <!-- restaurants list  -->
     <section id="restaurant-list">
-      <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-2 mb-5">
+      <div class="row row-cols-2 row-cols-md-3 g-3 mb-5">
         <restaurant-card
           v-for="restaurant in store.restaurants"
           :restaurant="restaurant"
@@ -151,23 +182,52 @@ export default {
         >
       </div>
     </section>
-
-    <!-- braintree payment system  -->
-    <!-- <div id="dropin-container"></div>
-    <button id="submit-button" class="button button--small button--green">
-      Purchase
-    </button> -->
   </div>
 </template>
 
 <style lang="scss" scoped>
+// jumbo section
+.jumbo {
+  position: relative;
+  background-color: white;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid white;
+  img {
+    width: 60%;
+    object-fit: cover;
+  }
+  .catch-phrase {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    width: 45%;
+    color: white;
+    font-size: 1.5rem;
+  }
+  h1 {
+    font-size: clamp(1.5rem, 2rem, 4rem);
+    color: black;
+  }
+  p {
+    font-size: clamp(1rem, 1.5rem, 2rem);
+    color: black;
+    // background-color: white;
+
+    position: relative;
+    z-index: 1;
+  }
+}
+
 // filter section
 .filter-section {
-  background-color: rgba(6, 82, 149, 0.345);
+  background-color: white;
   min-height: 10px;
   margin-bottom: 30px;
-  border-radius: 1rem;
-  color: grey;
+  border-radius: 2px;
+  // color: grey;
 
   .row {
     justify-content: space-between;
@@ -186,61 +246,35 @@ export default {
   }
   p {
     margin: 0;
+    text-transform: capitalize;
   }
 }
-.reset-button {
-  padding: 5px 10px;
-  border-radius: 10px;
-  border: 0px;
-  background-color: rgb(7, 24, 126);
-  color: white;
-  &:hover {
-    background-color: rgb(41, 70, 232);
-    color: rgb(137, 167, 255);
+.button-col {
+  text-align: end;
+  .button {
+    border-radius: 0;
+    padding: 0.5rem 2rem;
+    background-color: #0073de;
+    color: white;
+    text-decoration: none;
+    &:hover {
+      // border: none;
+      background-color: #0073de;
+    }
   }
 }
-// braintree payment system
-.button {
-  cursor: pointer;
-  font-weight: 500;
-  left: 3px;
-  line-height: inherit;
-  position: relative;
-  text-decoration: none;
-  text-align: center;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 3px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  display: inline-block;
-}
 
-.button--small {
-  padding: 10px 20px;
-  font-size: 0.875rem;
-}
-
-.button--green {
-  outline: none;
-  background-color: #64d18a;
-  border-color: #64d18a;
-  color: white;
-  transition: all 200ms ease;
-}
-
-.button--green:hover {
-  background-color: #8bdda8;
-  color: white;
-}
 // other
 #type-filter {
   .row {
     flex-wrap: nowrap;
     width: 100%;
     overflow: auto;
+    display: flex;
+    align-items: end;
     padding-bottom: 0.5rem;
-    margin-block: 1.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
   }
   .card {
     height: 100%;
@@ -256,6 +290,14 @@ export default {
     border-bottom-right-radius: 10px;
     -webkit-box-shadow: 1px 12px 17px -5px rgba(0, 0, 0, 0.34);
     box-shadow: 1px 5px 10px -5px rgba(0, 0, 0, 0.34);
+    background-color: #cdcdcd;
+    &:hover {
+      transform: scale(1.1);
+    }
+    &.active {
+      background-color: #ffffff;
+      transform: scale(1.1);
+    }
     .card-top {
       aspect-ratio: 1;
       .card-image {

@@ -15,7 +15,16 @@ export default {
       for (const item of store.checkoutCart) {
         totalPrice += item.price * item.quantity;
       }
-      return totalPrice.toFixed(2);
+      return this.formatPrice(totalPrice);
+    },
+
+    // method to convert price
+    formatPrice(price) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+      }).format(price);
     },
   },
 
@@ -184,7 +193,7 @@ export default {
                 </div>
                 <div class="primary-info">
                   <h5>{{ dish.name }}</h5>
-                  <p>price: ${{ dish.price }}</p>
+                  <p>price: {{ formatPrice(dish.price) }}</p>
                 </div>
                 <div class="quantity-info">
                   <h4 class="mt-auto">x {{ dish.quantity }}</h4>
@@ -194,7 +203,7 @@ export default {
             <div class="checkout-wrapper mt-auto">
               <div class="total-price d-flex align-items-center gap-3">
                 <h4>Total price:</h4>
-                <span> $ {{ calculateTotalPrice() }}</span>
+                <span> {{ calculateTotalPrice() }}</span>
               </div>
             </div>
           </div>
