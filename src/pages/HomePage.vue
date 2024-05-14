@@ -10,6 +10,7 @@ export default {
       store,
       types: [],
       pagination: [],
+      filters: [],
     };
   },
 
@@ -47,6 +48,7 @@ export default {
     clearFilters() {
       let types = this.activeTypes;
       this.types.forEach((type) => (type.active = false));
+      this.filters = [];
       this.fetchRestaurant();
     },
 
@@ -60,7 +62,29 @@ export default {
 
     handleTypeClick(type) {
       type.active = !type.active;
+
+      if (type.active) {
+        // Se il tipo è stato appena attivato, aggiungilo all'array filters
+        if (!this.filters.includes(type.id)) {
+          this.filters.push(type.id);
+        }
+      } else {
+        // Se il tipo è stato disattivato, rimuovilo dall'array filters
+        let index = this.filters.indexOf(type.id);
+        if (index !== -1) {
+          this.filters.splice(index, 1);
+        }
+      }
+
       this.fetchFilterRestaurant();
+    },
+
+    getTypeName(typeId) {
+      console.log(this.filters);
+      for (let type of this.filters) {
+        let type = this.types.find((t) => t.id === typeId);
+        return type ? type.name : ""; // Restituisce il nome del tipo se trovato, altrimenti una stringa vuota
+      }
     },
   },
 
@@ -114,18 +138,18 @@ export default {
 
     <!-- filter section -->
 
-    <div class="filter-section container">
-      <div class="row">
+    <div class="filter-section container" v-if="filters.length > 0">
+      <div class="row py-3 text-white">
         <div class="col-6 type-col">
           <h3>Your filters:</h3>
           <div
-            v-for="(selectedType, index) in activeTypes"
+            v-for="(selectedType, index) in filters"
             :key="selectedType.id"
-            class="filter-item"
+            class="filter-item ms-2"
           >
             <p>
-              {{ selectedType.name
-              }}<span v-if="index < activeTypes.length - 1">,&nbsp;</span>
+              {{ getTypeName(selectedType) }}
+              <span v-if="index < filters.length - 1">,&nbsp;</span>
             </p>
           </div>
         </div>
