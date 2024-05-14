@@ -172,12 +172,20 @@ export default {
       for (const item of store.cart) {
         totalPrice += item.price * item.quantity;
       }
-      return totalPrice.toFixed(2);
+      return this.formatPrice(totalPrice);
     },
 
     // method to save the cart in local storage
     saveCart() {
       localStorage.setItem("cart", JSON.stringify(store.cart));
+    },
+    // method to convert price
+    formatPrice(price) {
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: "USD",
+        minimumFractionDigits: 2,
+      }).format(price);
     },
   },
 };
@@ -229,7 +237,7 @@ export default {
             <p>{{ dish.description }}</p>
           </div>
           <div class="dish-purchase ms-auto d-flex flex-column">
-            <h3 class="dish-price">$ {{ dish.price }}</h3>
+            <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
             <div class="control-wrapper d-flex gap-2 mt-auto">
               <div
                 class="remove-to-cart"
@@ -251,6 +259,7 @@ export default {
     </div>
   </div>
 
+  <!-- Offcanvas -->
   <div
     class="offcanvas offcanvas-end w-50"
     data-bs-backdrop="false"
@@ -275,7 +284,7 @@ export default {
             <h5>
               {{ dish.name }}
             </h5>
-            <p>price: ${{ dish.price }}</p>
+            <p>price: {{ formatPrice(dish.price) }}</p>
           </div>
           <div class="quantity-info">
             <p>x{{ dish.quantity }}</p>
@@ -290,7 +299,7 @@ export default {
       </ul>
       <div class="checkout-wrapper mt-auto">
         <div class="total-price">
-          <span>Total price: $ {{ calculateTotalPrice() }}</span>
+          <span>Total price: {{ calculateTotalPrice() }}</span>
           <div class="btn-wrapper d-flex">
             <router-link :to="{ name: 'checkout' }" class="checkout-btn"
               >Check-out</router-link
