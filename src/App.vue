@@ -40,7 +40,12 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #003559;
+  background: rgb(12, 22, 74);
+  background: linear-gradient(
+    180deg,
+    rgba(12, 22, 74, 1) 0%,
+    rgba(0, 53, 89, 1) 100%
+  );
 
   .main {
     flex-grow: 1;

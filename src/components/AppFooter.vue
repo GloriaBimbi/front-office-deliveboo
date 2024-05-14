@@ -16,13 +16,13 @@
 
 <style lang="scss">
 .footer {
-  background-color: #002238;
+  background: rgb(12, 22, 74);
+
   padding: 20px;
   text-align: center;
   .footer-links {
     margin-bottom: 10px;
     a {
-      text-decoration: none;
       margin-right: 20px;
       color: white;
     }
