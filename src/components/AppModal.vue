@@ -6,10 +6,6 @@ export default {
       store,
     };
   },
-  props: {
-    cartRestaurant: String,
-    cart: Object,
-  },
   methods: {
     closeModal() {
       store.modal.show = false;

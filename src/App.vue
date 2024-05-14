@@ -28,11 +28,7 @@ export default {
     <app-header></app-header>
     <div class="main">
       <router-view></router-view>
-      <app-modal
-        :cart="cart"
-        :cartRestaurant="cartRestaurant"
-        v-if="store.modal.show"
-      />
+      <app-modal v-if="store.modal.show" />
     </div>
     <app-footer></app-footer>
   </div>
