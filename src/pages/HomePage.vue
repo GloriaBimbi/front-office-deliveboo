@@ -111,7 +111,15 @@ export default {
 <template>
   <div class="container">
     <section class="jumbo">
-      <h1></h1>
+      <img src="../../public/take-away-animate.svg" alt="" />
+
+      <div class="catch-phrase">
+        <h1>Deliveboo</h1>
+        <p>
+          "Consegniamo il gusto direttamente alla tua porta: il cibo che
+          desideri, quando lo desideri."
+        </p>
+      </div>
     </section>
 
     <!-- types filter -->
@@ -185,6 +193,37 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.jumbo {
+  position: relative;
+  padding-block: 1.5rem;
+  border-bottom: 1px solid white;
+  img {
+    width: 60%;
+    object-fit: cover;
+  }
+  .catch-phrase {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0;
+    width: 45%;
+    color: white;
+    font-size: 1.5rem;
+  }
+  h1 {
+    font-size: 4rem;
+  }
+  p {
+    // color: black;
+    // background-color: white;
+
+    position: relative;
+    z-index: 1;
+  }
+}
+
 // filter section
 .filter-section {
   background-color: rgba(6, 82, 149, 0.345);
