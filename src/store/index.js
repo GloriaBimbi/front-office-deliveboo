@@ -13,6 +13,7 @@ export const store = reactive({
   pagination: [],
   counter: 0,
   modal: {
+    id: null,
     show: false,
     name: "",
     image: "",
@@ -23,4 +24,6 @@ export const store = reactive({
   selectedDish: null,
   error: false,
   checkoutCart: [],
+  cart: JSON.parse(localStorage.getItem("cart")) || [],
+  cartRestaurant: "",
 });

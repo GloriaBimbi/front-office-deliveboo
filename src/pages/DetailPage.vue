@@ -9,10 +9,10 @@ export default {
     return {
       store,
       restaurant: [],
-      cart: JSON.parse(localStorage.getItem("cart")) || [],
+      // cart: JSON.parse(localStorage.getItem("cart")) || [],
       error: "",
       showErrorModal: false,
-      cartRestaurant: "",
+      // cartRestaurant: "",
       cartRestaurantSlug: "",
     };
   },
@@ -25,7 +25,7 @@ export default {
       let currentItem = store.checkoutCart[i];
       store.counter += currentItem.quantity;
     }
-    // this.cart = store.checkoutCart;
+    // store.cart = store.checkoutCart;
 
     const restaurantSlug = this.$route.params.slug;
     axios
@@ -57,6 +57,7 @@ export default {
 
       //controllo che l'indice esista e nel caso collego la modale cliccata con le sue chiavi nello store
       if (store.dishes.includes(selectedDish)) {
+        store.modal.id = selectedDish.id;
         store.modal.name = selectedDish.name;
         store.modal.image = selectedDish.image;
         store.modal.description = selectedDish.description;
@@ -99,6 +100,7 @@ export default {
       window.location.href = url;
     },
 
+    // method to add item to cart
     addToCart(dishId) {
       const dishToAdd = this.restaurant.dishes.find(
         (dish) => dish.id === dishId
@@ -107,21 +109,21 @@ export default {
       if (!dishToAdd) {
         return;
       }
-      this.cartRestaurant =
-        this.cart.length > 0 ? this.cart[0].restaurant : null;
-
+      store.cartRestaurant =
+        store.cart.length > 0 ? store.cart[0].restaurant : null;
+      console.log(store.cartRestaurant);
       if (
-        !this.cartRestaurant ||
-        this.cartRestaurant === this.restaurant.name
+        !store.cartRestaurant ||
+        store.cartRestaurant === this.restaurant.name
       ) {
-        const existingCartItem = this.cart.find(
+        const existingCartItem = store.cart.find(
           (item) => item.id === dishToAdd.id
         );
 
         if (existingCartItem) {
           existingCartItem.quantity++;
         } else {
-          this.cart.push({
+          store.cart.push({
             ...dishToAdd,
             quantity: 1,
             restaurant: this.restaurant.name,
@@ -133,11 +135,11 @@ export default {
         this.showErrorModal = true;
       }
 
-      this.cartRestaurantSlug = this.stringToSlug(this.cartRestaurant);
+      this.cartRestaurantSlug = this.stringToSlug(store.cartRestaurant);
     },
     // method to clear the cart
     clearCart() {
-      this.cart = [];
+      store.cart = [];
       this.saveCart();
 
       // close modal
@@ -147,17 +149,17 @@ export default {
 
     // method to remove the selected dish from the cart
     isDishInCart(dishId) {
-      return this.cart.some((item) => item.id === dishId);
+      return store.cart.some((item) => item.id === dishId);
     },
 
     // Metodo per rimuovere un piatto dal carrello
     removeToCart(dishId) {
-      const index = this.cart.findIndex((item) => item.id === dishId);
+      const index = store.cart.findIndex((item) => item.id === dishId);
       if (index !== -1) {
-        if (this.cart[index].quantity > 1) {
-          this.cart[index].quantity--;
+        if (store.cart[index].quantity > 1) {
+          store.cart[index].quantity--;
         } else {
-          this.cart.splice(index, 1);
+          store.cart.splice(index, 1);
         }
         // Diminuiamo il contatore solo se un piatto è effettivamente rimosso dal carrello
         store.counter--;
@@ -167,7 +169,7 @@ export default {
     // method to calculate the total price of the selected dishes in the cart
     calculateTotalPrice() {
       let totalPrice = 0;
-      for (const item of this.cart) {
+      for (const item of store.cart) {
         totalPrice += item.price * item.quantity;
       }
       return totalPrice.toFixed(2);
@@ -175,7 +177,7 @@ export default {
 
     // method to save the cart in local storage
     saveCart() {
-      localStorage.setItem("cart", JSON.stringify(this.cart));
+      localStorage.setItem("cart", JSON.stringify(store.cart));
     },
   },
 };
@@ -261,7 +263,11 @@ export default {
     </div>
     <div class="offcanvas-body d-flex flex-column">
       <ul class="cart-list">
-        <li class="cart-list-item" v-for="(dish, index) in cart" :key="index">
+        <li
+          class="cart-list-item"
+          v-for="(dish, index) in store.cart"
+          :key="index"
+        >
           <div class="img-dish-wrapper">
             <img :src="dish.image" alt="" />
           </div>
@@ -416,6 +422,7 @@ export default {
         gap: 0.5rem;
         margin-left: auto;
         .quantity-btn {
+          cursor: pointer;
           height: 30px;
           line-height: 30px;
           vertical-align: top;
