@@ -141,45 +141,45 @@ export default {
 
       this.cartRestaurantSlug = this.stringToSlug(store.cartRestaurant);
     },
-    replaceCart() {
-      store.restaurants.forEach((restaurant) => {
-        if (restaurant.name == this.newRestaurant) {
-          const replacedRestaurant = restaurant;
-          console.log(replacedRestaurant);
-          return;
-          const dishId = dish.id;
-          console.log(dishId);
+    // replaceCart() {
+    //   store.restaurants.forEach((restaurant) => {
+    //     if (restaurant.name == this.newRestaurant) {
+    //       const replacedRestaurant = restaurant;
+    //       console.log(replacedRestaurant);
+    //       return;
+    //       const dishId = dish.id;
+    //       console.log(dishId);
 
-          // clear cart
-          this.clearCart();
-          console.log(store.cart);
+    //       // clear cart
+    //       this.clearCart();
+    //       console.log(store.cart);
 
-          store.cartRestaurant =
-            store.cart.length > 0 ? store.cart[0].restaurant : null;
+    //       store.cartRestaurant =
+    //         store.cart.length > 0 ? store.cart[0].restaurant : null;
 
-          const existingCartItem = store.cart.find(
-            (item) => item.id === dishToAdd.id
-          );
+    //       const existingCartItem = store.cart.find(
+    //         (item) => item.id === dishToAdd.id
+    //       );
 
-          if (existingCartItem) {
-            existingCartItem.quantity++;
-          } else {
-            store.cart.push({
-              ...dishToAdd,
-              quantity: 1,
-              restaurant: this.restaurant.name,
-            });
-          }
-          store.counter++;
-          this.saveCart();
-          this.closeModal();
-        }
-      });
-      this.restaurant.dishes.forEach((dish) => {
-        // console.log(this.newRestaurant);
-        // console.log(dish.name);
-      });
-    },
+    //       if (existingCartItem) {
+    //         existingCartItem.quantity++;
+    //       } else {
+    //         store.cart.push({
+    //           ...dishToAdd,
+    //           quantity: 1,
+    //           restaurant: this.restaurant.name,
+    //         });
+    //       }
+    //       store.counter++;
+    //       this.saveCart();
+    //       this.closeModal();
+    //     }
+    //   });
+    //   this.restaurant.dishes.forEach((dish) => {
+    //     // console.log(this.newRestaurant);
+    //     // console.log(dish.name);
+    //   });
+    // },
     // method to clear the cart
     clearCart() {
       // clear the cart
@@ -273,11 +273,38 @@ export default {
       <h2 class="text-white">Menù</h2>
       <ul class="mx-0 px-0">
         <li class="d-flex gap-2 text-white" v-for="dish in restaurant.dishes">
+          <div @click="handleModalOpening(dish)" class="img-wrapper">
+            <img :src="dish.image" alt="" />
+          </div>
+          <div
+            class="dish-detail d-flex flex-column"
+            @click="handleModalOpening(dish)"
+          >
+            <h3>{{ dish.name }}</h3>
+            <p>{{ dish.description }}</p>
+          </div>
+          <div class="dish-purchase ms-auto d-flex flex-column">
+            <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
+            <div class="control-wrapper d-flex gap-2 mt-auto">
+              <div
+                class="remove-to-cart"
+                @click="removeToCart(dish.id)"
+                v-if="store.counter > 0 && isDishInCart(dish.id)"
+              >
+                <h2><i class="cart-icon" :class="['fas', 'fa-minus']"></i></h2>
+              </div>
+              <div class="add-to-cart" @click="addToCart(dish.id)">
+                <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
+              </div>
+            </div>
+          </div>
+          <!-- modale per errore ordine -->
+
           <!-- modal for error in order -->
           <div
             class="modal modal-cart"
-            :class="{ show: showErrorModal }"
-            v-if="showErrorModal"
+            :class="{ show: showErrorModal.visible }"
+            v-if="showErrorModal && dish.id == showErrorModal.id"
           >
             <div class="modal-dialog">
               <div class="modal-content">
@@ -306,73 +333,6 @@ export default {
                   <button
                     type="button"
                     class="btn btn-warning"
-                    @click="replaceCart()"
-                  >
-                    Clear Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div @click="handleModalOpening(dish)" class="img-wrapper">
-            <img :src="dish.image" alt="" />
-          </div>
-          <div
-            class="dish-detail d-flex flex-column"
-            @click="handleModalOpening(dish)"
-          >
-            <h3>{{ dish.name }}</h3>
-            <p>{{ dish.description }}</p>
-          </div>
-          <div class="dish-purchase ms-auto d-flex flex-column">
-            <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
-            <div class="control-wrapper d-flex gap-2 mt-auto">
-              <div
-                class="remove-to-cart"
-                @click="removeToCart(dish.id)"
-                v-if="store.counter > 0 && isDishInCart(dish.id)"
-              >
-                <h2><i class="cart-icon" :class="['fas', 'fa-minus']"></i></h2>
-              </div>
-              <div class="add-to-cart" @click="addToCart(dish.id)">
-                <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
-              </div>
-            </div>
-          </div>
-          <!-- modale per errore ordine -->
-
-          <div
-            class="modal modal-cart"
-            :class="{ show: showErrorModal.visible }"
-            v-if="showErrorModal && dish.id == showErrorModal.id"
-          >
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Error</h5>
-                  <button
-                    type="button"
-                    class="btn-close"
-                    @click="closeModal"
-                  ></button>
-                </div>
-                <div class="modal-body">
-                  <p>
-                    The cart contains items from a different restaurant. Do you
-                    want to clear the cart and continue with the new order?
-                  </p>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    @click="closeModal"
-                  >
-                    <span @click="goToRestaurant()">Close</span>
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-primary"
                     @click="resetCartAdd(dish)"
                   >
                     Clear Cart
