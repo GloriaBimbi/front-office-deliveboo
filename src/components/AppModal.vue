@@ -6,12 +6,41 @@ export default {
       store,
     };
   },
+  props: {
+    cartRestaurant: String,
+    cart: Object,
+  },
   methods: {
     closeModal() {
       store.modal.show = false;
     },
-    basketIncrementCounter() {
+    // method to add item to cart
+    addToCart(dishId) {
+      const dishToAdd = store.modal;
+
+      if (!dishToAdd) {
+        return;
+      }
+      store.cartRestaurant =
+        store.cart.length > 0 ? store.cart[0].restaurant : null;
+
+      const existingCartItem = store.cart.find(
+        (item) => item.id === dishToAdd.id
+      );
+      if (existingCartItem) {
+        existingCartItem.quantity++;
+      } else {
+        store.cart.push({
+          ...dishToAdd,
+          quantity: 1,
+        });
+      }
       store.counter++;
+      this.saveCart();
+    },
+    // method to save the cart in local storage
+    saveCart() {
+      localStorage.setItem("cart", JSON.stringify(store.cart));
     },
   },
 };
@@ -39,7 +68,7 @@ export default {
             <li class="price">$ {{ store.modal.price }}</li>
             <li class="add-to-cart">
               <div @click="closeModal()" class="add-button">
-                <h5 @click="basketIncrementCounter()">Add to your order</h5>
+                <h5 @click="addToCart(store.modal.id)">Add to your order</h5>
               </div>
             </li>
           </ul>
