@@ -297,6 +297,16 @@ export default {
           </div>
         </li>
       </ul>
+      <div class="col-2">
+        <button
+          v-if="store.cart.length >= 1"
+          type="button"
+          class="btn btn-danger"
+          @click="clearCart()"
+        >
+          Reset Order
+        </button>
+      </div>
       <div class="checkout-wrapper mt-auto">
         <div class="total-price">
           <span>Total price: {{ calculateTotalPrice() }}</span>
