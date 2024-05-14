@@ -22,6 +22,22 @@ export default {
   created() {
     const storedCart = localStorage.getItem("cart");
     store.checkoutCart = storedCart ? JSON.parse(storedCart) : [];
+
+    var button = document.querySelector("#submit-button");
+
+    braintree.dropin.create(
+      {
+        authorization: "sandbox_ktg99hd8_bcfn9z8w5qhgr5xq",
+        selector: "#dropin-container",
+      },
+      function (err, instance) {
+        button.addEventListener("click", function () {
+          instance.requestPaymentMethod(function (err, payload) {
+            // Submit payload.nonce to your server
+          });
+        });
+      }
+    );
   },
 };
 </script>
@@ -190,7 +206,7 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background-color: white;
   h1,

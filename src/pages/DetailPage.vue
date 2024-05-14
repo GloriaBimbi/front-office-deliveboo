@@ -427,6 +427,7 @@ export default {
           align-items: center;
           border-radius: 50%;
           color: white;
+          cursor: pointer;
           &.minus {
             background-color: #d9d9d9;
           }
