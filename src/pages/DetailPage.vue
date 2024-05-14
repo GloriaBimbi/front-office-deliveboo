@@ -422,6 +422,7 @@ export default {
         gap: 0.5rem;
         margin-left: auto;
         .quantity-btn {
+          cursor: pointer;
           height: 30px;
           line-height: 30px;
           vertical-align: top;
