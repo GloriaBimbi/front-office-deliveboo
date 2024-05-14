@@ -3,7 +3,6 @@ import axios from "axios";
 import { store } from "./store";
 import AppHeader from "./components/AppHeader.vue";
 import AppFooter from "./components/AppFooter.vue";
-import AppModal from "./components/AppModal.vue";
 
 export default {
   data() {
@@ -16,7 +15,6 @@ export default {
   components: {
     AppHeader,
     AppFooter,
-    AppModal,
   },
 
   methods: {},
@@ -28,7 +26,6 @@ export default {
     <app-header></app-header>
     <div class="main">
       <router-view></router-view>
-      <app-modal v-if="store.modal.show" />
     </div>
     <app-footer></app-footer>
   </div>

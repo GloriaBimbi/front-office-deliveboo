@@ -1,20 +1,22 @@
 <script>
 import { api, store } from "../store";
 import axios from "axios";
+import AppModal from "../components/AppModal.vue";
 
 export default {
-  props: { restaurant: Object },
-
   data() {
     return {
       store,
       restaurant: [],
-      // cart: JSON.parse(localStorage.getItem("cart")) || [],
       error: "",
       showErrorModal: false,
-      // cartRestaurant: "",
       cartRestaurantSlug: "",
+      newRestaurant: "",
     };
+  },
+
+  components: {
+    AppModal,
   },
 
   created() {
@@ -65,7 +67,6 @@ export default {
         store.modal.ingredients_list = selectedDish.ingredients_list;
         //faccio in modo che cliccando su una card si apra la modale
         store.modal.show = true;
-        console.log(store.modal);
       }
     },
 
@@ -111,7 +112,7 @@ export default {
       }
       store.cartRestaurant =
         store.cart.length > 0 ? store.cart[0].restaurant : null;
-      console.log(store.cartRestaurant);
+
       if (
         !store.cartRestaurant ||
         store.cartRestaurant === this.restaurant.name
@@ -133,12 +134,54 @@ export default {
         this.saveCart();
       } else {
         this.showErrorModal = true;
+        this.newRestaurant = store.cartRestaurant;
+        return this.newRestaurant;
       }
 
       this.cartRestaurantSlug = this.stringToSlug(store.cartRestaurant);
     },
+    replaceCart() {
+      store.restaurants.forEach((restaurant) => {
+        if (restaurant.name == this.newRestaurant) {
+          const replacedRestaurant = restaurant;
+          console.log(replacedRestaurant);
+          return;
+          const dishId = dish.id;
+          console.log(dishId);
+
+          // clear cart
+          this.clearCart();
+          console.log(store.cart);
+
+          store.cartRestaurant =
+            store.cart.length > 0 ? store.cart[0].restaurant : null;
+
+          const existingCartItem = store.cart.find(
+            (item) => item.id === dishToAdd.id
+          );
+
+          if (existingCartItem) {
+            existingCartItem.quantity++;
+          } else {
+            store.cart.push({
+              ...dishToAdd,
+              quantity: 1,
+              restaurant: this.restaurant.name,
+            });
+          }
+          store.counter++;
+          this.saveCart();
+          this.closeModal();
+        }
+      });
+      this.restaurant.dishes.forEach((dish) => {
+        // console.log(this.newRestaurant);
+        // console.log(dish.name);
+      });
+    },
     // method to clear the cart
     clearCart() {
+      // clear the cart
       store.cart = [];
       this.saveCart();
 
@@ -214,10 +257,48 @@ export default {
     <div v-if="!store.error" class="wrapper-menu">
       <h2 class="text-white">Menù</h2>
       <ul class="mx-0 px-0">
-        <li
-          class="d-flex gap-2 text-white"
-          v-for="(dish, index) in restaurant.dishes"
-        >
+        <li class="d-flex gap-2 text-white" v-for="dish in restaurant.dishes">
+          <!-- modal for error in order -->
+          <div
+            class="modal modal-cart"
+            :class="{ show: showErrorModal }"
+            v-if="showErrorModal"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Error</h5>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    The cart contains items from a different restaurant. Do you
+                    want to clear the cart and continue with the new order?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="closeModal()"
+                  >
+                    Close
+                  </button>
+                  <button type="button" class="btn btn-info">
+                    <span @click="goToRestaurant()"
+                      >Go back to "{{ store.cartRestaurant }}" page</span
+                    >
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-warning"
+                    @click="replaceCart()"
+                  >
+                    Clear Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
           <div @click="handleModalOpening(dish)" class="img-wrapper">
             <img :src="dish.image" alt="" />
           </div>
@@ -301,36 +382,7 @@ export default {
       </div>
     </div>
   </div>
-  <!-- modale per errore ordine -->
-
-  <div
-    class="modal modal-cart"
-    :class="{ show: showErrorModal }"
-    v-if="showErrorModal"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Error</h5>
-          <button type="button" class="btn-close" @click="closeModal"></button>
-        </div>
-        <div class="modal-body">
-          <p>
-            The cart contains items from a different restaurant. Do you want to
-            clear the cart and continue with the new order?
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="closeModal">
-            <span @click="goToRestaurant()">Close</span>
-          </button>
-          <button type="button" class="btn btn-primary" @click="clearCart()">
-            Clear Cart
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <app-modal :restaurant="restaurant" v-if="store.modal.show" />
 </template>
 
 <style lang="scss" scoped>

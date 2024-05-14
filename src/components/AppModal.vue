@@ -4,35 +4,81 @@ export default {
   data() {
     return {
       store,
+      wrongRestaurant: false,
+      cartRestaurantSlug: "",
     };
   },
+
+  props: { restaurant: Object },
+
   methods: {
+    // method to transform the title of the restaurant whose dishes are in the cart into a slug
+    stringToSlug(str) {
+      str = str.replace(/^\s+|\s+$/g, ""); // Trim
+      str = str.toLowerCase();
+
+      // remove undesiderized characters
+      var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
+      var to = "aaaaeeeeiiiioooouuuunc------";
+      for (var i = 0, l = from.length; i < l; i++) {
+        str = str.replace(new RegExp(from.charAt(i), "g"), to.charAt(i));
+      }
+
+      str = str
+        .replace(/[^a-z0-9 -]/g, "") // revove non halfabetic characters
+        .replace(/\s+/g, "-") // sonstitute spaces with -
+        .replace(/-+/g, "-"); // remove duplicate -
+      return str;
+    },
+    // method to close the modal
     closeModal() {
       store.modal.show = false;
     },
+    // method to convert the restaurant name into a slug and redirects the page
+    goToRestaurant() {
+      const url = `/restaurant/${this.cartRestaurantSlug}`;
+      window.location.href = url;
+    },
     // method to add item to cart
     addToCart(dishId) {
-      const dishToAdd = store.modal;
+      const dishToAdd = this.restaurant.dishes.find(
+        (dish) => dish.id === dishId
+      );
+      console.log(dishToAdd);
+      console.log(!dishToAdd);
 
       if (!dishToAdd) {
         return;
       }
       store.cartRestaurant =
         store.cart.length > 0 ? store.cart[0].restaurant : null;
+      if (
+        !store.cartRestaurant ||
+        store.cartRestaurant === this.restaurant.name
+      ) {
+        const existingCartItem = store.cart.find(
+          (item) => item.id === dishToAdd.id
+        );
 
-      const existingCartItem = store.cart.find(
-        (item) => item.id === dishToAdd.id
-      );
-      if (existingCartItem) {
-        existingCartItem.quantity++;
+        if (existingCartItem) {
+          existingCartItem.quantity++;
+        } else {
+          store.cart.push({
+            ...dishToAdd,
+            quantity: 1,
+            restaurant: this.restaurant.name,
+          });
+        }
+        store.counter++;
+        this.saveCart();
+        this.closeModal();
       } else {
-        store.cart.push({
-          ...dishToAdd,
-          quantity: 1,
-        });
+        this.wrongRestaurant = true;
+        this.showErrorModal = true;
       }
-      store.counter++;
-      this.saveCart();
+
+      this.cartRestaurantSlug = this.stringToSlug(store.cartRestaurant);
+      console.log(this.cartRestaurantSlug);
     },
     // method to save the cart in local storage
     saveCart() {
@@ -62,10 +108,24 @@ export default {
               <span>Ingredients:</span> {{ store.modal.ingredients_list }}
             </li>
             <li class="price">$ {{ store.modal.price }}</li>
-            <li class="add-to-cart">
-              <div @click="closeModal()" class="add-button">
-                <h5 @click="addToCart(store.modal.id)">Add to your order</h5>
+            <li v-if="wrongRestaurant == false" class="add-to-cart">
+              <div @click="addToCart(store.modal.id)" class="add-button">
+                <h5>Add to your order</h5>
               </div>
+            </li>
+            <li class="error">
+              <div v-if="wrongRestaurant == true" class="error">
+                Your order can only include dishes from the same restaurant.
+              </div>
+              <button
+                v-if="wrongRestaurant == true"
+                type="button"
+                class="btn btn-info"
+              >
+                <span @click="goToRestaurant()"
+                  >Go back to "{{ store.cartRestaurant }}" page</span
+                >
+              </button>
             </li>
           </ul>
         </div>
@@ -121,6 +181,7 @@ export default {
 
       .info {
         list-style: none;
+
         .name {
           color: white;
           font-size: 30px;
@@ -176,6 +237,15 @@ export default {
               opacity: 100%;
             }
           }
+        }
+
+        .error {
+          color: red;
+          text-align: center;
+          margin-top: 10px;
+          display: flex;
+          justify-content: center;
+          flex-direction: column;
         }
       }
     }
