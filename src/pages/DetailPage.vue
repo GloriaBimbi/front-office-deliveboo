@@ -11,7 +11,7 @@ export default {
       restaurant: [],
       // cart: JSON.parse(localStorage.getItem("cart")) || [],
       error: "",
-      showErrorModal: false,
+      showErrorModal: { visible: false, id: "" },
       // cartRestaurant: "",
       cartRestaurantSlug: "",
     };
@@ -71,7 +71,7 @@ export default {
 
     // method to close dish modal
     closeModal() {
-      this.showErrorModal = false;
+      this.showErrorModal.visible = false;
     },
 
     // CART
@@ -102,6 +102,7 @@ export default {
 
     // method to add item to cart
     addToCart(dishId) {
+      console.log(dishId);
       const dishToAdd = this.restaurant.dishes.find(
         (dish) => dish.id === dishId
       );
@@ -132,7 +133,8 @@ export default {
         store.counter++;
         this.saveCart();
       } else {
-        this.showErrorModal = true;
+        this.showErrorModal.visible = true;
+        this.showErrorModal.id = dishId;
       }
 
       this.cartRestaurantSlug = this.stringToSlug(store.cartRestaurant);
@@ -186,6 +188,12 @@ export default {
         currency: "USD",
         minimumFractionDigits: 2,
       }).format(price);
+    },
+
+    resetCartAdd(dishId) {
+      console.log(dishId);
+      this.clearCart();
+      this.addToCart(dishId.id);
     },
   },
 };
@@ -248,6 +256,48 @@ export default {
               </div>
               <div class="add-to-cart" @click="addToCart(dish.id)">
                 <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
+              </div>
+            </div>
+          </div>
+          <!-- modale per errore ordine -->
+
+          <div
+            class="modal modal-cart"
+            :class="{ show: showErrorModal.visible }"
+            v-if="showErrorModal && dish.id == showErrorModal.id"
+          >
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Error</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    @click="closeModal"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    The cart contains items from a different restaurant. Do you
+                    want to clear the cart and continue with the new order?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    @click="closeModal"
+                  >
+                    <span @click="goToRestaurant()">Close</span>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-primary"
+                    @click="resetCartAdd(dish)"
+                  >
+                    Clear Cart
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -316,36 +366,6 @@ export default {
             >
             <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
           </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <!-- modale per errore ordine -->
-
-  <div
-    class="modal modal-cart"
-    :class="{ show: showErrorModal }"
-    v-if="showErrorModal"
-  >
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Error</h5>
-          <button type="button" class="btn-close" @click="closeModal"></button>
-        </div>
-        <div class="modal-body">
-          <p>
-            The cart contains items from a different restaurant. Do you want to
-            clear the cart and continue with the new order?
-          </p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" @click="closeModal">
-            <span @click="goToRestaurant()">Close</span>
-          </button>
-          <button type="button" class="btn btn-primary" @click="clearCart()">
-            Clear Cart
-          </button>
         </div>
       </div>
     </div>
