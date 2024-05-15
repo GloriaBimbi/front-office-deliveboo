@@ -21,8 +21,12 @@ export default {
 .loader-container {
   height: 100vh;
   width: 100vw;
-  background-color: #0a1c4d;
-  position: fixed;
+  background-color: linear-gradient(
+    180deg,
+    rgb(12, 22, 74) 0%,
+    rgb(0, 53, 89) 100%
+  );
+  position: absolute;
   top: 0;
   left: 0;
   display: flex;
