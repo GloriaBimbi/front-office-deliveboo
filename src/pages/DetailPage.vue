@@ -508,6 +508,7 @@ export default {
           vertical-align: top;
           font-size: 1.5rem;
           font-weight: bold;
+          padding-bottom: 5px;
           aspect-ratio: 1 / 1;
           display: flex;
           justify-content: center;
@@ -516,7 +517,8 @@ export default {
           color: white;
           cursor: pointer;
           &.minus {
-            background-color: #d9d9d9;
+            background-color: rgb(254, 227, 227);
+            color: red;
           }
           &.plus {
             background-color: #0073de;
