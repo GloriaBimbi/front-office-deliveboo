@@ -64,12 +64,12 @@ export default {
       type.active = !type.active;
 
       if (type.active) {
-        // Se il tipo è stato appena attivato, aggiungilo all'array filters
+        // If the type has just been activated, add it to the filters array
         if (!this.filters.includes(type.id)) {
           this.filters.push(type.id);
         }
       } else {
-        // Se il tipo è stato disattivato, rimuovilo dall'array filters
+        // If the type has been deactivated, remove it from the filters array
         let index = this.filters.indexOf(type.id);
         if (index !== -1) {
           this.filters.splice(index, 1);
@@ -83,7 +83,7 @@ export default {
       console.log(this.filters);
       for (let type of this.filters) {
         let type = this.types.find((t) => t.id === typeId);
-        return type ? type.name : ""; // Restituisce il nome del tipo se trovato, altrimenti una stringa vuota
+        return type ? type.name : ""; // Return the name of the type if found, otherwise an empty string
       }
     },
   },
@@ -115,8 +115,8 @@ export default {
     <div class="catch-phrase">
       <h1>Deliveboo</h1>
       <p>
-        "Consegniamo il gusto direttamente alla tua porta: il cibo che desideri,
-        quando lo desideri."
+        "We deliver flavor straight to your door: the food you want, when you
+        want it."
       </p>
     </div>
   </section>
@@ -161,13 +161,16 @@ export default {
           </div>
         </div>
         <div class="col button-col">
-          <button class="button" @click="clearFilters()">reset</button>
+          <button class="button" @click="clearFilters()">Reset</button>
         </div>
       </div>
     </div>
 
     <!-- restaurants list  -->
     <section id="restaurant-list">
+      <h2 class="text-white text-center" v-if="store.restaurants.length < 1">
+        Your search did not produce any results...
+      </h2>
       <div class="row row-cols-2 row-cols-md-3 g-3 mb-5">
         <restaurant-card
           v-for="restaurant in store.restaurants"
@@ -206,6 +209,8 @@ export default {
     width: 45%;
     color: white;
     font-size: 1.5rem;
+    padding-right: 20px;
+    padding-left: 20px;
   }
   h1 {
     font-size: clamp(1.5rem, 2rem, 4rem);
