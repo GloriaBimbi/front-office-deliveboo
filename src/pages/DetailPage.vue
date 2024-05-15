@@ -242,7 +242,13 @@ export default {
 </script>
 
 <template>
+  <!-- go back to homepage on click -->
+  <a @click="$router.replace({ path: '/' })" class="btn back-button mb-2">
+    <i class="fa-solid fa-arrow-rotate-left"></i>
+    <span class="back-button-label"> Back to Home</span>
+  </a>
   <div class="container my-5">
+    <!-- open cart offcanvas  -->
     <a
       class="open-cart-btn"
       data-bs-toggle="offcanvas"
@@ -255,10 +261,7 @@ export default {
         {{ store.counter }}
       </div>
     </a>
-    <!-- go back to homepage on click -->
-    <a @click="$router.replace({ path: '/' })" class="btn back-button mb-2"
-      ><i class="fa-solid fa-arrow-rotate-left"></i> Back to Home</a
-    >
+
     <div class="row mb-5">
       <div class="col-6 img-container text-center">
         <img class="img-fluid" :src="restaurant.image" alt="" />
@@ -269,10 +272,12 @@ export default {
         <p class="text-light fs-8">{{ restaurant.address }}</p>
       </div>
     </div>
+  </div>
+  <div class="container-fluid bg-white px-5 pt-3">
     <div v-if="!store.error" class="wrapper-menu">
-      <h2 class="text-white">Menù</h2>
+      <h2 class="h1">Menù</h2>
       <ul class="mx-0 px-0">
-        <li class="d-flex gap-2 text-white" v-for="dish in restaurant.dishes">
+        <li class="d-flex gap-2" v-for="dish in restaurant.dishes">
           <div @click="handleModalOpening(dish)" class="img-wrapper">
             <img :src="dish.image" alt="" />
           </div>
@@ -302,9 +307,9 @@ export default {
 
           <!-- modal for error in order -->
           <div
-            class="modal modal-cart"
             :class="{ show: showErrorModal.visible }"
             v-if="showErrorModal && dish.id == showErrorModal.id"
+            class="modal modal-cart"
           >
             <div class="modal-dialog">
               <div class="modal-content">
@@ -352,13 +357,21 @@ export default {
   <!-- Offcanvas -->
   <div
     class="offcanvas offcanvas-end w-50"
-    data-bs-backdrop="false"
+    data-bs-backdrop="true"
     tabindex="-1"
     id="offcanvasExample"
     aria-labelledby="offcanvasExampleLabel"
   >
-    <div class="offcanvas-header">
+    <div class="offcanvas-header d-flex align-items-center">
       <h5 class="offcanvas-title" id="offcanvasExampleLabel">Shopping cart</h5>
+      <button
+        v-if="store.cart.length >= 1"
+        type="button"
+        class="button-reset-cart"
+        @click="clearCart()"
+      >
+        Reset Order
+      </button>
     </div>
     <div class="offcanvas-body d-flex flex-column">
       <ul class="cart-list">
@@ -380,23 +393,16 @@ export default {
             <p>x{{ dish.quantity }}</p>
             <div class="quantity-wrapper">
               <div class="quantity-btn minus" @click="removeToCart(dish.id)">
-                -
+                <i class="cart-icon" :class="['fas', 'fa-minus']"></i>
               </div>
-              <div class="quantity-btn plus" @click="addToCart(dish.id)">+</div>
+              <div class="quantity-btn plus" @click="addToCart(dish.id)">
+                <i class="cart-icon" :class="['fas', 'fa-plus']"></i>
+              </div>
             </div>
           </div>
         </li>
       </ul>
-      <div class="col-2">
-        <button
-          v-if="store.cart.length >= 1"
-          type="button"
-          class="btn btn-danger"
-          @click="clearCart()"
-        >
-          Reset Order
-        </button>
-      </div>
+      <div class="col-2"></div>
       <div class="checkout-wrapper mt-auto">
         <div class="total-price">
           <span>Total price: {{ calculateTotalPrice() }}</span>
@@ -417,6 +423,8 @@ export default {
 .container {
   position: relative;
   .open-cart-btn {
+    box-shadow: 0px 5px 8px 2px rgba(0, 0, 0, 0.2);
+
     position: fixed;
     top: 100px;
     right: 1.5rem;
@@ -503,29 +511,46 @@ export default {
         margin-left: auto;
         .quantity-btn {
           cursor: pointer;
-          height: 30px;
-          line-height: 30px;
-          vertical-align: top;
-          font-size: 1.5rem;
-          font-weight: bold;
           padding-bottom: 5px;
           aspect-ratio: 1 / 1;
           display: flex;
           justify-content: center;
           align-items: center;
-          border-radius: 50%;
-          color: white;
+          height: 30px;
           cursor: pointer;
+          border-radius: 50%;
+          box-shadow: 0px 5px 8px 2px rgba(0, 0, 0, 0.2);
           &.minus {
-            background-color: rgb(254, 227, 227);
+            background-color: white;
             color: red;
+            &:hover {
+              background-color: rgb(244, 244, 244);
+            }
           }
           &.plus {
-            background-color: #0073de;
+            background-color: #0099ff;
+            color: white;
+            &:hover {
+              background-color: #23a7ff;
+            }
           }
         }
       }
     }
+  }
+}
+.button-reset-cart {
+  border-radius: 0;
+  padding: 0.5rem 2rem;
+  text-decoration: none;
+  border: 1px solid #de0000;
+  background-color: white;
+  color: #de0000;
+  width: max-content;
+  &:hover {
+    // border: none;
+    color: white;
+    background-color: #de0000;
   }
 }
 .checkout-wrapper {
@@ -561,22 +586,21 @@ export default {
   }
 }
 
-.bg-card {
-  background-color: rgba(0, 153, 255, 0.1);
-  color: #ffffff;
-}
-
-.card {
-  cursor: pointer;
-}
-
 .img-container {
   img {
     width: 100%;
   }
 }
 
+.container-fluid {
+  border-block: 5px solid #0099ff;
+  -webkit-box-shadow: 0px -5px 50px 14px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px -5px 50px 14px rgba(0, 0, 0, 0.5);
+}
 .wrapper-menu {
+  .h1 {
+    color: #0099ff;
+  }
   ul {
     li {
       padding-block: 1rem;
@@ -621,7 +645,9 @@ export default {
       padding-left: 1px;
       padding-top: 4px;
       background-color: #0099ff;
+      color: white;
       border-radius: 50%;
+      box-shadow: 0px 5px 8px 2px rgba(0, 0, 0, 0.2);
       &:hover {
         background-color: #23a7ff;
       }
@@ -630,6 +656,7 @@ export default {
     .remove-to-cart {
       background-color: white;
       color: red;
+
       &:hover {
         background-color: rgb(244, 244, 244);
       }
@@ -638,20 +665,40 @@ export default {
 }
 
 .back-button {
-  padding: 1rem 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  position: absolute;
+  left: 0px;
+  top: 140px;
+  width: 60px;
+  aspect-ratio: 1 / 1;
   background-color: rgba(255, 255, 255, 0.807);
-  font-weight: 600;
-  border-radius: 3px;
+  font-weight: bold;
+  border-radius: 0px;
 
   opacity: 0.5;
   a {
     cursor: pointer;
     text-decoration: none;
   }
+  .back-button-label {
+    display: none;
+  }
+  i {
+    display: block;
+  }
 
   &:hover {
     opacity: 1;
-    transition: opacity linear 0.1s;
+    width: 180px;
+    aspect-ratio: 3 / 1;
+    z-index: 2;
+    transition: opacity linear 0.3s;
+    .back-button-label {
+      display: block;
+    }
   }
 }
 .modal-cart {

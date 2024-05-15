@@ -90,18 +90,20 @@ export default {
 
 <template>
   <div>
-    <div class="layover container">
-      <div class="my-modal row">
-        <div @click="closeModal()" class="close-element">X</div>
-        <div class="img-container col-6">
+    <div class="layover">
+      <div class="my-modal">
+        <div @click="closeModal()" class="close-element">
+          <i class="fa-solid fa-xmark"></i>
+        </div>
+        <div class="img-container">
           <img
             v-if="store.modal.image"
             :src="store.modal.image"
             alt="dish image"
           />
         </div>
-        <div class="info-container col-6">
-          <ul class="info">
+        <div class="info-container">
+          <ul class="info p-0">
             <li class="name">{{ store.modal.name }}</li>
             <li class="description">"{{ store.modal.description }}"</li>
             <li class="ingredients">
@@ -148,12 +150,11 @@ export default {
   z-index: 1;
 
   .my-modal {
-    padding: 30px;
-    width: 65%;
-    background-color: #003559;
-    color: white;
-    padding: 1rem;
-    border-radius: 1rem;
+    width: 1000px;
+    height: 500px;
+    background-color: white;
+    color: black;
+    border-radius: 5px;
     position: relative;
     @include align("both");
 
@@ -161,39 +162,41 @@ export default {
       cursor: pointer;
       font-size: 30px;
       position: absolute;
-      top: 10px;
-      left: 792px;
+      top: 0;
+      right: 1rem;
       color: rgb(86, 83, 83);
     }
 
     .img-container {
-      width: 30%;
-      @include align("both");
-      gap: 5px;
-      flex-direction: column;
+      width: 100%;
+      height: 100%;
+
       img {
-        max-width: 225px;
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
       }
     }
 
     .info-container {
-      width: 70%;
-
+      padding-inline: 1rem;
       .info {
         list-style: none;
 
         .name {
-          color: white;
           font-size: 30px;
-          text-align: center;
+          font-weight: bold;
           margin-top: 30px;
           margin-bottom: 40px;
+          color: #0099ff;
         }
 
         .description {
-          color: rgb(110, 94, 152);
+          font-size: 1.5rem;
           max-height: 180px;
-          overflow: scroll;
+          overflow: auto;
         }
 
         .ingredients {
@@ -201,17 +204,18 @@ export default {
 
           span {
             text-decoration: underline;
+            font-weight: 500;
           }
         }
 
         .price {
           font-size: 20px;
           padding-top: 20px;
+          font-weight: bold;
         }
 
         .add-to-cart {
           margin-top: 40px;
-          @include align("both");
           gap: 40px;
 
           h5 {
@@ -221,20 +225,17 @@ export default {
           }
 
           .add-button {
-            @include align("both");
-            gap: 20px;
-            padding: 8px 60px;
-            border-radius: 8px;
-            cursor: pointer;
-          }
-
-          .add-button {
+            border-radius: 0;
+            padding: 0.5rem 2rem;
+            text-decoration: none;
+            border: 1px solid #0099ff;
             background-color: white;
-            color: black;
-            opacity: 80%;
-
+            color: #0099ff;
+            width: max-content;
             &:hover {
-              opacity: 100%;
+              // border: none;
+              color: white;
+              background-color: #0099ff;
             }
           }
         }
