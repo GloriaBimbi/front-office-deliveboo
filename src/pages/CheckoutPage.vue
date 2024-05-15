@@ -1,12 +1,33 @@
 <script>
-import { store } from "../store";
+import { api, store } from "../store";
+import axios from "axios";
 export default {
   //   props: { restaurant: Object },
 
   data() {
     return {
       store,
+      dropinInstance: null,
+      clientToken: null,
+      formData: {
+        name: "gia",
+        lastname: "kjb",
+        address: {
+          addressStreet: "kjb",
+          addressCivic: "3",
+          addressCap: "23454",
+          addressCity: "sgf",
+          addressCountry: "dfg",
+        },
+        phone: "3245345343",
+        email: "dfg@mail.com",
+      },
     };
+  },
+
+  mounted() {
+    // Ottieni il token client quando il componente viene montato
+    this.getClientToken();
   },
 
   methods: {
@@ -26,27 +47,120 @@ export default {
         minimumFractionDigits: 2,
       }).format(price);
     },
+
+    getClientToken() {
+      axios
+        .get(api.baseUrl + "generate-client-token")
+        .then((response) => {
+          // Memorizza il token client ricevuto
+          this.clientToken = response.data.clientToken;
+          console.log(response.data);
+
+          // Inizializza il client Braintree dopo aver ottenuto il token client
+          const dropinContainer = document.getElementById("dropin-container");
+          if (dropinContainer) {
+            braintree.dropin.create(
+              {
+                authorization: this.clientToken,
+                container: "#dropin-container", // ID del div dove verrà mostrato il widget Drop-in UI
+              },
+              (dropinErr, dropinInstance) => {
+                if (dropinErr) {
+                  console.error(
+                    "Errore durante la creazione di Drop-in UI:",
+                    dropinErr
+                  );
+                  return;
+                }
+                this.dropinInstance = dropinInstance;
+                // Aggiungi un gestore per l'evento di submit del form...
+              }
+            );
+          } else {
+            console.error("Element with ID 'dropin-container' not found.");
+          }
+          // Aggiungi un gestore per l'evento di submit del form
+          // Quando l'utente invia il form, ottieni i dettagli del pagamento
+          // dal widget Drop-in UI e invia i dati al backend per l'elaborazione del pagamento
+          const form = document.getElementById("payment-form");
+          form.addEventListener("submit", (event) => {
+            event.preventDefault();
+
+            this.dropinInstance.requestPaymentMethod(
+              (requestPaymentMethodErr, payload) => {
+                if (requestPaymentMethodErr) {
+                  console.error(
+                    "Errore durante la richiesta del metodo di pagamento:",
+                    requestPaymentMethodErr
+                  );
+                  return;
+                }
+
+                // Invia i dati del pagamento al backend per l'elaborazione
+                axios
+                  .post("/api/process-payment", {
+                    paymentMethodNonce: payload.nonce,
+                    // Altri dettagli del pagamento, come l'importo, l'ID ordine, ecc.
+                  })
+                  .then((response) => {
+                    // Gestisci la risposta dal backend (es. conferma di pagamento)
+                    console.log("i dati sono stati inviati");
+                  })
+                  .catch((error) => {
+                    // Gestisci gli errori (es. pagamento fallito)
+                    console.log("pagamento fallito");
+                  });
+              }
+            );
+          });
+        })
+        .catch((error) => {
+          console.error("Errore durante il recupero del token client:", error);
+        });
+    },
+
+    submitPayment() {
+      // Inizializza il client Braintree con il token client ottenuto
+      if (this.clientToken) {
+        this.dropinInstance.requestPaymentMethod(
+          (requestPaymentMethodErr, payload) => {
+            if (requestPaymentMethodErr) {
+              console.error(
+                "Errore durante la richiesta del metodo di pagamento:",
+                requestPaymentMethodErr
+              );
+              return;
+            }
+
+            axios
+              .post(api.baseUrl + "process-payment", {
+                paymentMethodNonce: payload.nonce,
+                amount: this.calculateTotalPrice(),
+                formData: this.formData,
+              })
+              .then((response) => {
+                // Gestisci la risposta dal backend (es. conferma di pagamento)
+                console.log("i dati sono stati inviati");
+              })
+              .catch((error) => {
+                // Gestisci gli errori (es. pagamento fallito)
+                console.error("Errore durante il pagamento:", error);
+              });
+          }
+        );
+      } else {
+        console.error(
+          "Token client non disponibile. Impossibile inizializzare il client Braintree."
+        );
+      }
+    },
   },
 
   created() {
     const storedCart = localStorage.getItem("cart");
     store.checkoutCart = storedCart ? JSON.parse(storedCart) : [];
 
-    var button = document.querySelector("#submit-button");
-
-    braintree.dropin.create(
-      {
-        authorization: "sandbox_ktg99hd8_bcfn9z8w5qhgr5xq",
-        selector: "#dropin-container",
-      },
-      function (err, instance) {
-        button.addEventListener("click", function () {
-          instance.requestPaymentMethod(function (err, payload) {
-            // Submit payload.nonce to your server
-          });
-        });
-      }
-    );
+    const button = document.querySelector("#submit-button");
   },
 };
 </script>
@@ -58,13 +172,14 @@ export default {
         <div class="col form-col">
           <div class="py-5 my-5">
             <h3>Insert your data</h3>
-            <form action="post">
+            <form id="payment-form">
               <div class="general-user-info">
                 <div class="input-name">
                   <label for="name" class="form-label mb-0 mt-2"
                     >Firstname</label
                   >
                   <input
+                    v-model="formData.name"
                     type="text"
                     name="name"
                     id="name"
@@ -76,6 +191,7 @@ export default {
                     >Lastname</label
                   >
                   <input
+                    v-model="formData.lastname"
                     type="text"
                     name="surname"
                     id="surname"
@@ -85,6 +201,7 @@ export default {
                 <div class="input-email">
                   <label for="email" class="form-label mb-0 mt-2">Email</label>
                   <input
+                    v-model="formData.email"
                     type="email"
                     name="email"
                     id="email"
@@ -94,6 +211,7 @@ export default {
                 <div class="input-phone">
                   <label for="phone" class="form-label mb-0 mt-2">Phone</label>
                   <input
+                    v-model="formData.phone"
                     type="phone"
                     name="phone"
                     id="phone"
@@ -107,6 +225,7 @@ export default {
                     >Address Street</label
                   >
                   <input
+                    v-model="formData.address.addressStreet"
                     type="text"
                     name="address-street"
                     id="address-street"
@@ -120,6 +239,7 @@ export default {
                         >Civic</label
                       >
                       <input
+                        v-model="formData.address.addressCivic"
                         type="text"
                         name="address-civic"
                         id="address-civic"
@@ -133,6 +253,7 @@ export default {
                         >Cap</label
                       >
                       <input
+                        v-model="formData.address.addressCap"
                         type="number"
                         name="address-cap"
                         id="address-cap"
@@ -146,6 +267,7 @@ export default {
                         >City</label
                       >
                       <input
+                        v-model="formData.address.addressCity"
                         type="text"
                         name="address-city"
                         id="address-city"
@@ -159,6 +281,7 @@ export default {
                         >Country</label
                       >
                       <input
+                        v-model="formData.address.addressCountry"
                         type="text"
                         name="address-country"
                         id="address-country"
@@ -172,6 +295,7 @@ export default {
                 <button
                   id="submit-button"
                   class="button button--small button--green"
+                  @click="submitPayment()"
                 >
                   Purchase
                 </button>
@@ -309,6 +433,10 @@ export default {
 
 .button--green:hover {
   background-color: #8bdda8;
+  color: white;
+}
+
+.form-label {
   color: white;
 }
 </style>
