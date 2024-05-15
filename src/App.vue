@@ -3,20 +3,19 @@ import axios from "axios";
 import { store } from "./store";
 import AppHeader from "./components/AppHeader.vue";
 import AppFooter from "./components/AppFooter.vue";
-import AppLoader from "./components/AppLoader.vue";
 
 export default {
   data() {
     return {
       store,
       title: "Boolfolio",
+      isLoading: false,
     };
   },
 
   components: {
     AppHeader,
     AppFooter,
-    AppLoader,
   },
 
   methods: {},
@@ -28,7 +27,6 @@ export default {
     <app-header></app-header>
     <div class="main">
       <router-view></router-view>
-      <app-loader></app-loader>
     </div>
     <app-footer></app-footer>
   </div>
