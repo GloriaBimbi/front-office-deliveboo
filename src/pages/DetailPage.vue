@@ -511,7 +511,6 @@ export default {
         margin-left: auto;
         .quantity-btn {
           cursor: pointer;
-          padding-bottom: 5px;
           aspect-ratio: 1 / 1;
           display: flex;
           justify-content: center;
