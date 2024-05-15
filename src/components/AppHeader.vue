@@ -28,7 +28,7 @@ export default {
   </nav>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .navbar {
   background: rgb(12, 22, 74);
   .container-logo {

@@ -2,6 +2,7 @@
 import { api, store } from "../store";
 import axios from "axios";
 import AppModal from "../components/AppModal.vue";
+import AppLoader from "../components/AppLoader.vue";
 
 export default {
   data() {
@@ -13,11 +14,13 @@ export default {
       // cartRestaurant: "",
       cartRestaurantSlug: "",
       newRestaurant: "",
+      isLoading: false,
     };
   },
 
   components: {
     AppModal,
+    AppLoader,
   },
 
   created() {
@@ -31,11 +34,17 @@ export default {
     // store.cart = store.checkoutCart;
 
     const restaurantSlug = this.$route.params.slug;
+    this.isLoading = true;
+    console.log(this.isLoading);
     axios
       .get(api.baseUrl + `restaurants/${restaurantSlug}`)
       .then((response) => {
         this.restaurant = response.data;
         store.dishes = this.restaurant.dishes;
+      })
+      .finally(() => {
+        this.isLoading = false;
+        console.log(this.isLoading);
       })
       .catch((error) => {
         store.error = true;
@@ -417,6 +426,7 @@ export default {
     </div>
   </div>
   <app-modal :restaurant="restaurant" v-if="store.modal.show" />
+  <app-loader :loading="isLoading"></app-loader>
 </template>
 
 <style lang="scss" scoped>

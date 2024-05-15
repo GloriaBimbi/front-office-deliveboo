@@ -9,6 +9,7 @@ export default {
     return {
       store,
       title: "Boolfolio",
+      isLoading: false,
     };
   },
 

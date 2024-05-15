@@ -14,7 +14,7 @@
   </footer>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .footer {
   background: rgb(12, 22, 74);
 
