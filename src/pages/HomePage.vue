@@ -42,6 +42,14 @@ export default {
           } else {
             this.fetchRestaurant();
           }
+          // Construct URL with selected type names in the order they are selected
+          let selectedTypeNames = this.filters.map((filterId) => {
+            let filterType = this.types.find((type) => type.id === filterId);
+            return filterType ? this.getTypeName(filterType.id) : "";
+          });
+          let url = new URL(window.location.href);
+          url.searchParams.set("type", selectedTypeNames.join(","));
+          history.pushState({}, "", url);
         });
     },
 
@@ -50,6 +58,11 @@ export default {
       this.types.forEach((type) => (type.active = false));
       this.filters = [];
       this.fetchRestaurant();
+
+      // Remove 'type' parameter from URL
+      let url = new URL(window.location.href);
+      url.searchParams.delete("type");
+      history.pushState({}, "", url);
     },
 
     fetchTypes() {
@@ -75,6 +88,15 @@ export default {
           this.filters.splice(index, 1);
         }
       }
+
+      // Construct URL with selected type names
+      let selectedTypeNames = this.filters.map((filterId) => {
+        let filterType = this.types.find((type) => type.id === filterId);
+        return filterType ? this.getTypeName(filterType.id) : "";
+      });
+      let url = new URL(window.location.href);
+      url.searchParams.set("type", selectedTypeNames.join("-"));
+      history.pushState({}, "", url);
 
       this.fetchFilterRestaurant();
     },
