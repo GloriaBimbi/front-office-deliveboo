@@ -35,18 +35,14 @@ export default {
 
     const restaurantSlug = this.$route.params.slug;
     this.isLoading = true;
-    console.log(this.isLoading);
     axios
       .get(api.baseUrl + `restaurants/${restaurantSlug}`)
       .then((response) => {
-        console.log(this.restaurant);
         this.restaurant = response.data;
         store.dishes = this.restaurant.dishes;
-        console.log(this.restaurant);
       })
       .finally(() => {
         this.isLoading = false;
-        console.log(this.isLoading);
       })
       .catch((error) => {
         store.error = true;
@@ -115,7 +111,6 @@ export default {
 
     // method to add item to cart
     addToCart(dishId) {
-      console.log(dishId);
       const dishToAdd = this.restaurant.dishes.find(
         (dish) => dish.id === dishId
       );
@@ -244,7 +239,6 @@ export default {
     },
 
     resetCartAdd(dishId) {
-      console.log(dishId);
       this.clearCart();
       this.addToCart(dishId.id);
     },

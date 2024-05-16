@@ -44,8 +44,6 @@ export default {
       const dishToAdd = this.restaurant.dishes.find(
         (dish) => dish.id === dishId
       );
-      console.log(dishToAdd);
-      console.log(!dishToAdd);
 
       if (!dishToAdd) {
         return;
@@ -78,7 +76,6 @@ export default {
       }
 
       this.cartRestaurantSlug = this.stringToSlug(store.cartRestaurant);
-      console.log(this.cartRestaurantSlug);
     },
     // method to save the cart in local storage
     saveCart() {
@@ -225,6 +222,7 @@ export default {
           }
 
           .add-button {
+            cursor: pointer;
             border-radius: 0;
             padding: 0.5rem 2rem;
             text-decoration: none;

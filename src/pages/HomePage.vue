@@ -33,7 +33,6 @@ export default {
         })
         .finally(() => {
           this.isLoading = false;
-          console.log(this.isLoading);
         });
     },
     fetchFilterRestaurant() {
@@ -75,7 +74,6 @@ export default {
 
     fetchTypes() {
       axios.get(api.baseUrl + `types`).then((response) => {
-        // console.log(response.data);
         this.types = response.data;
         store.types = this.types;
       });
@@ -110,7 +108,6 @@ export default {
     },
 
     getTypeName(typeId) {
-      console.log(this.filters);
       for (let type of this.filters) {
         let type = this.types.find((t) => t.id === typeId);
         return type ? type.name : ""; // Return the name of the type if found, otherwise an empty string
