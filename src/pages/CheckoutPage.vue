@@ -12,13 +12,11 @@ export default {
       formData: {
         name: "gia",
         lastname: "kjb",
-        address: {
-          addressStreet: "kjb",
-          addressCivic: "3",
-          addressCap: "23454",
-          addressCity: "sgf",
-          addressCountry: "dfg",
-        },
+        addressStreet: "kjb",
+        addressCivic: "3",
+        addressCap: "23454",
+        addressCity: "sgf",
+        addressCountry: "dfg",
         phone: "3245345343",
         email: "dfg@mail.com",
       },
@@ -97,19 +95,19 @@ export default {
                 }
 
                 // Invia i dati del pagamento al backend per l'elaborazione
-                axios
-                  .post("/api/process-payment", {
-                    paymentMethodNonce: payload.nonce,
-                    // Altri dettagli del pagamento, come l'importo, l'ID ordine, ecc.
-                  })
-                  .then((response) => {
-                    // Gestisci la risposta dal backend (es. conferma di pagamento)
-                    console.log("i dati sono stati inviati");
-                  })
-                  .catch((error) => {
-                    // Gestisci gli errori (es. pagamento fallito)
-                    console.log("pagamento fallito");
-                  });
+                //   axios
+                //     .post(api.baseUrl + "process-payment", {
+                //       paymentMethodNonce: payload.nonce,
+                //       // Altri dettagli del pagamento, come l'importo, l'ID ordine, ecc.
+                //     })
+                //     .then((response) => {
+                //       // Gestisci la risposta dal backend (es. conferma di pagamento)
+                //       console.log("i dati sono stati inviati");
+                //     })
+                //     .catch((error) => {
+                //       // Gestisci gli errori (es. pagamento fallito)
+                //       console.log("pagamento fallito");
+                //     });
               }
             );
           });
@@ -137,6 +135,7 @@ export default {
                 paymentMethodNonce: payload.nonce,
                 amount: this.calculateTotalPrice(),
                 formData: this.formData,
+                cart: store.checkoutCart,
               })
               .then((response) => {
                 // Gestisci la risposta dal backend (es. conferma di pagamento)
@@ -166,7 +165,7 @@ export default {
 </script>
 
 <template>
-  <div class="wrapper">
+  <div class="wrapper-checkout">
     <div class="container">
       <div class="row row-cols-2 g-5">
         <div class="col form-col">
@@ -225,7 +224,7 @@ export default {
                     >Address Street</label
                   >
                   <input
-                    v-model="formData.address.addressStreet"
+                    v-model="formData.addressStreet"
                     type="text"
                     name="address-street"
                     id="address-street"
@@ -239,7 +238,7 @@ export default {
                         >Civic</label
                       >
                       <input
-                        v-model="formData.address.addressCivic"
+                        v-model="formData.addressCivic"
                         type="text"
                         name="address-civic"
                         id="address-civic"
@@ -253,7 +252,7 @@ export default {
                         >Cap</label
                       >
                       <input
-                        v-model="formData.address.addressCap"
+                        v-model="formData.addressCap"
                         type="number"
                         name="address-cap"
                         id="address-cap"
@@ -267,7 +266,7 @@ export default {
                         >City</label
                       >
                       <input
-                        v-model="formData.address.addressCity"
+                        v-model="formData.addressCity"
                         type="text"
                         name="address-city"
                         id="address-city"
@@ -281,7 +280,7 @@ export default {
                         >Country</label
                       >
                       <input
-                        v-model="formData.address.addressCountry"
+                        v-model="formData.addressCountry"
                         type="text"
                         name="address-country"
                         id="address-country"
@@ -338,7 +337,7 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-.wrapper {
+.wrapper-checkout {
   min-height: 100vh;
   width: 100%;
   background-color: white;
