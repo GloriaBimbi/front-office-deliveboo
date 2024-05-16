@@ -150,7 +150,7 @@ export default {
       </p>
     </div>
   </section>
-  <div class="container">
+  <div class="container-md">
     <!-- types filter -->
     <section id="type-filter">
       <div class="row g-3">
@@ -377,5 +377,21 @@ export default {
 .loader-container {
   position: relative;
   min-height: 200px;
+}
+
+// Media Queries
+
+// home moto
+
+@media screen and (max-width: 540px) {
+  .catch-phrase {
+    h1 {
+      font-size: 25px;
+    }
+
+    p {
+      font-size: 15px;
+    }
+  }
 }
 </style>

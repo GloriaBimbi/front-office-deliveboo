@@ -274,31 +274,34 @@ export default {
         </div>
       </a>
 
-      <div class="row mb-5">
-        <div class="col-6 img-container text-center">
+      <div class="row mb-5 g-3">
+        <div class="col-md-6 img-container text-center">
           <img class="img-fluid" :src="restaurant.image" alt="" />
         </div>
-        <div class="col-6 text-white">
+        <div class="col-md-6 text-white">
           <h1>{{ restaurant.name }}</h1>
           <p class="text-light">{{ restaurant.description }}</p>
           <p class="text-light fs-8">{{ restaurant.address }}</p>
         </div>
       </div>
     </div>
-    <div v-if="!isLoading" class="container-fluid bg-white px-5 pt-3">
+    <div v-if="!isLoading" class="container-fluid bg-white px-md-5 pt-md-3">
       <div v-if="!store.error" class="wrapper-menu">
         <h2 class="h1">Menù</h2>
         <ul class="mx-0 px-0">
           <li class="d-flex gap-2" v-for="dish in restaurant.dishes">
-            <div @click="handleModalOpening(dish)" class="img-wrapper">
-              <img :src="dish.image" alt="" />
-            </div>
-            <div
-              class="dish-detail d-flex flex-column"
-              @click="handleModalOpening(dish)"
-            >
-              <h3>{{ dish.name }}</h3>
-              <p>{{ dish.description }}</p>
+            <div class="d-md-flex gap-3">
+              <div @click="handleModalOpening(dish)" class="img-wrapper">
+                <img :src="dish.image" alt="" />
+              </div>
+              <!-- <div class="col-6 col-md-9 d-flex"> -->
+              <div
+                class="dish-detail d-flex flex-column"
+                @click="handleModalOpening(dish)"
+              >
+                <h3>{{ dish.name }}</h3>
+                <p>{{ dish.description }}</p>
+              </div>
             </div>
             <div class="dish-purchase ms-auto d-flex flex-column">
               <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
@@ -314,6 +317,7 @@ export default {
                 </div>
                 <div class="add-to-cart" @click="addToCart(dish.id)">
                   <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
+                  <!-- </div> -->
                 </div>
               </div>
             </div>
@@ -371,7 +375,7 @@ export default {
 
     <!-- Offcanvas -->
     <div
-      class="offcanvas offcanvas-end w-50"
+      class="offcanvas offcanvas-end"
       data-bs-backdrop="true"
       tabindex="-1"
       id="offcanvasExample"
@@ -629,6 +633,8 @@ export default {
     height: 200px;
     img {
       height: 100%;
+      object-fit: cover;
+      object-position: center;
       cursor: pointer;
     }
   }
@@ -654,6 +660,7 @@ export default {
     .add-to-cart,
     .remove-to-cart {
       width: 75px;
+      height: 75px;
       margin-top: auto;
       display: flex;
       justify-content: center;
@@ -695,7 +702,7 @@ export default {
   background-color: rgba(255, 255, 255, 0.807);
   font-weight: bold;
   border-radius: 0px;
-
+  z-index: 1;
   opacity: 0.5;
   a {
     cursor: pointer;
@@ -738,5 +745,40 @@ export default {
 .loader-container {
   position: relative;
   min-height: 200px;
+}
+
+// Media Queries
+
+// restaurant detail
+
+@media screen and (min-width: 768px) {
+  .offcanvas {
+    width: 50%;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .wrapper-menu .dish-purchase .add-to-cart[data-v-0dd41eea],
+  .wrapper-menu .dish-purchase .remove-to-cart[data-v-0dd41eea] {
+    width: 50px;
+    height: 50px;
+    font-size: 0.8em;
+  }
+
+  .wrapper-menu .dish-purchase .dish-price[data-v-0dd41eea] {
+    font-size: 16px;
+  }
+
+  .wrapper-menu .dish-detail p[data-v-0dd41eea] {
+    font-size: 16px;
+  }
+
+  .control-wrapper {
+    flex-direction: column;
+  }
+
+  .offcanvas {
+    width: 100%;
+  }
 }
 </style>
