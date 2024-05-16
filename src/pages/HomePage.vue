@@ -3,6 +3,7 @@ import { api, store } from "../store";
 import axios from "axios";
 import RestaurantCard from "../components/RestaurantCard.vue";
 import UiPagination from "../components/ui/UiPagination.vue";
+import AppLoader from "../components/AppLoader.vue";
 
 export default {
   data() {
@@ -11,20 +12,29 @@ export default {
       types: [],
       pagination: [],
       filters: [],
+      isLoading: false,
     };
   },
 
   components: {
     RestaurantCard,
     UiPagination,
+    AppLoader,
   },
 
   methods: {
     fetchRestaurant(endpoint = api.baseUrl + `restaurants`) {
-      axios.get(endpoint).then((response) => {
-        store.restaurants = response.data.data;
-        this.pagination = response.data.links;
-      });
+      this.isLoading = true;
+      axios
+        .get(endpoint)
+        .then((response) => {
+          store.restaurants = response.data.data;
+          this.pagination = response.data.links;
+        })
+        .finally(() => {
+          this.isLoading = false;
+          console.log(this.isLoading);
+        });
     },
     fetchFilterRestaurant() {
       axios
@@ -34,8 +44,6 @@ export default {
           },
         })
         .then((response) => {
-          console.log(response.data.result.data);
-          console.log(response.data.result.links);
           if (!response.data.result.link) {
             store.restaurants = response.data.result.data;
             this.pagination = response.data.result.links;
@@ -190,15 +198,19 @@ export default {
 
     <!-- restaurants list  -->
     <section id="restaurant-list">
-      <h2 class="text-white text-center" v-if="store.restaurants.length < 1">
+      <h2
+        class="text-white text-center"
+        v-if="store.restaurants.length < 1 && !isLoading"
+      >
         Your search did not produce any results...
       </h2>
-      <div class="row row-cols-2 row-cols-md-3 g-3 mb-5">
+      <div class="row row-cols-2 row-cols-md-3 g-3 mb-5 loader-container">
         <restaurant-card
           v-for="restaurant in store.restaurants"
           :restaurant="restaurant"
           :key="restaurant.id"
         />
+        <app-loader :loading="isLoading"></app-loader>
       </div>
       <!-- paginator -->
       <div class="mt-3" v-if="pagination.length > 3">
@@ -359,5 +371,11 @@ export default {
     background-color: rgba(0, 153, 255, 0.1);
     color: #ffffff;
   }
+}
+
+// loader
+.loader-container {
+  position: relative;
+  min-height: 200px;
 }
 </style>

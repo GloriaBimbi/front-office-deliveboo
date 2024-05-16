@@ -2,6 +2,7 @@
 import { api, store } from "../store";
 import axios from "axios";
 import AppModal from "../components/AppModal.vue";
+import AppLoader from "../components/AppLoader.vue";
 
 export default {
   data() {
@@ -13,11 +14,13 @@ export default {
       // cartRestaurant: "",
       cartRestaurantSlug: "",
       newRestaurant: "",
+      isLoading: false,
     };
   },
 
   components: {
     AppModal,
+    AppLoader,
   },
 
   created() {
@@ -31,11 +34,19 @@ export default {
     // store.cart = store.checkoutCart;
 
     const restaurantSlug = this.$route.params.slug;
+    this.isLoading = true;
+    console.log(this.isLoading);
     axios
       .get(api.baseUrl + `restaurants/${restaurantSlug}`)
       .then((response) => {
+        console.log(this.restaurant);
         this.restaurant = response.data;
         store.dishes = this.restaurant.dishes;
+        console.log(this.restaurant);
+      })
+      .finally(() => {
+        this.isLoading = false;
+        console.log(this.isLoading);
       })
       .catch((error) => {
         store.error = true;
@@ -242,181 +253,189 @@ export default {
 </script>
 
 <template>
-  <!-- go back to homepage on click -->
-  <a @click="$router.replace({ path: '/' })" class="btn back-button mb-2">
-    <i class="fa-solid fa-arrow-rotate-left"></i>
-    <span class="back-button-label"> Back to Home</span>
-  </a>
-  <div class="container my-5">
-    <!-- open cart offcanvas  -->
-    <a
-      class="open-cart-btn"
-      data-bs-toggle="offcanvas"
-      href="#offcanvasExample"
-      role="button"
-      aria-controls="offcanvasExample"
-    >
-      <i class="fa-solid fa-shopping-cart"></i>
-      <div class="counter" v-if="store.counter > 0">
-        {{ store.counter }}
-      </div>
+  <section class="loader-container">
+    <!-- go back to homepage on click -->
+    <a @click="$router.replace({ path: '/' })" class="btn back-button mb-2">
+      <i class="fa-solid fa-arrow-rotate-left"></i>
+      <span class="back-button-label"> Back to Home</span>
     </a>
-
-    <div class="row mb-5">
-      <div class="col-6 img-container text-center">
-        <img class="img-fluid" :src="restaurant.image" alt="" />
-      </div>
-      <div class="col-6 text-white">
-        <h1>{{ restaurant.name }}</h1>
-        <p class="text-light">{{ restaurant.description }}</p>
-        <p class="text-light fs-8">{{ restaurant.address }}</p>
-      </div>
-    </div>
-  </div>
-  <div class="container-fluid bg-white px-5 pt-3">
-    <div v-if="!store.error" class="wrapper-menu">
-      <h2 class="h1">Menù</h2>
-      <ul class="mx-0 px-0">
-        <li class="d-flex gap-2" v-for="dish in restaurant.dishes">
-          <div @click="handleModalOpening(dish)" class="img-wrapper">
-            <img :src="dish.image" alt="" />
-          </div>
-          <div
-            class="dish-detail d-flex flex-column"
-            @click="handleModalOpening(dish)"
-          >
-            <h3>{{ dish.name }}</h3>
-            <p>{{ dish.description }}</p>
-          </div>
-          <div class="dish-purchase ms-auto d-flex flex-column">
-            <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
-            <div class="control-wrapper d-flex gap-2 mt-auto">
-              <div
-                class="remove-to-cart"
-                @click="removeToCart(dish.id)"
-                v-if="store.counter > 0 && isDishInCart(dish.id)"
-              >
-                <h2><i class="cart-icon" :class="['fas', 'fa-minus']"></i></h2>
-              </div>
-              <div class="add-to-cart" @click="addToCart(dish.id)">
-                <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
-              </div>
-            </div>
-          </div>
-          <!-- modale per errore ordine -->
-
-          <!-- modal for error in order -->
-          <div
-            :class="{ show: showErrorModal.visible }"
-            v-if="showErrorModal && dish.id == showErrorModal.id"
-            class="modal modal-cart"
-          >
-            <div class="modal-dialog">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title">Error</h5>
-                </div>
-                <div class="modal-body">
-                  <p>
-                    The cart contains items from a different restaurant. Do you
-                    want to clear the cart and continue with the new order?
-                  </p>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    @click="closeModal()"
-                  >
-                    Close
-                  </button>
-                  <button type="button" class="btn btn-info">
-                    <span @click="goToRestaurant()"
-                      >Go back to "{{ store.cartRestaurant }}" page</span
-                    >
-                  </button>
-                  <button
-                    type="button"
-                    class="btn btn-warning"
-                    @click="resetCartAdd(dish)"
-                  >
-                    Clear Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div v-if="store.error">
-      <h2 class="error-text">{{ this.error }}</h2>
-    </div>
-  </div>
-
-  <!-- Offcanvas -->
-  <div
-    class="offcanvas offcanvas-end w-50"
-    data-bs-backdrop="true"
-    tabindex="-1"
-    id="offcanvasExample"
-    aria-labelledby="offcanvasExampleLabel"
-  >
-    <div class="offcanvas-header d-flex align-items-center">
-      <h5 class="offcanvas-title" id="offcanvasExampleLabel">Shopping cart</h5>
-      <button
-        v-if="store.cart.length >= 1"
-        type="button"
-        class="button-reset-cart"
-        @click="clearCart()"
+    <div class="container my-5">
+      <!-- open cart offcanvas  -->
+      <a
+        class="open-cart-btn"
+        data-bs-toggle="offcanvas"
+        href="#offcanvasExample"
+        role="button"
+        aria-controls="offcanvasExample"
       >
-        Reset Order
-      </button>
+        <i class="fa-solid fa-shopping-cart"></i>
+        <div class="counter" v-if="store.counter > 0">
+          {{ store.counter }}
+        </div>
+      </a>
+
+      <div class="row mb-5">
+        <div class="col-6 img-container text-center">
+          <img class="img-fluid" :src="restaurant.image" alt="" />
+        </div>
+        <div class="col-6 text-white">
+          <h1>{{ restaurant.name }}</h1>
+          <p class="text-light">{{ restaurant.description }}</p>
+          <p class="text-light fs-8">{{ restaurant.address }}</p>
+        </div>
+      </div>
     </div>
-    <div class="offcanvas-body d-flex flex-column">
-      <ul class="cart-list">
-        <li
-          class="cart-list-item"
-          v-for="(dish, index) in store.cart"
-          :key="index"
-        >
-          <div class="img-dish-wrapper">
-            <img :src="dish.image" alt="" />
-          </div>
-          <div class="primary-info">
-            <h5>
-              {{ dish.name }}
-            </h5>
-            <p>price: {{ formatPrice(dish.price) }}</p>
-          </div>
-          <div class="quantity-info">
-            <p>x{{ dish.quantity }}</p>
-            <div class="quantity-wrapper">
-              <div class="quantity-btn minus" @click="removeToCart(dish.id)">
-                <i class="cart-icon" :class="['fas', 'fa-minus']"></i>
-              </div>
-              <div class="quantity-btn plus" @click="addToCart(dish.id)">
-                <i class="cart-icon" :class="['fas', 'fa-plus']"></i>
+    <div v-if="!isLoading" class="container-fluid bg-white px-5 pt-3">
+      <div v-if="!store.error" class="wrapper-menu">
+        <h2 class="h1">Menù</h2>
+        <ul class="mx-0 px-0">
+          <li class="d-flex gap-2" v-for="dish in restaurant.dishes">
+            <div @click="handleModalOpening(dish)" class="img-wrapper">
+              <img :src="dish.image" alt="" />
+            </div>
+            <div
+              class="dish-detail d-flex flex-column"
+              @click="handleModalOpening(dish)"
+            >
+              <h3>{{ dish.name }}</h3>
+              <p>{{ dish.description }}</p>
+            </div>
+            <div class="dish-purchase ms-auto d-flex flex-column">
+              <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
+              <div class="control-wrapper d-flex gap-2 mt-auto">
+                <div
+                  class="remove-to-cart"
+                  @click="removeToCart(dish.id)"
+                  v-if="store.counter > 0 && isDishInCart(dish.id)"
+                >
+                  <h2>
+                    <i class="cart-icon" :class="['fas', 'fa-minus']"></i>
+                  </h2>
+                </div>
+                <div class="add-to-cart" @click="addToCart(dish.id)">
+                  <h2><i class="cart-icon" :class="['fas', 'fa-plus']"></i></h2>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-      </ul>
-      <div class="col-2"></div>
-      <div class="checkout-wrapper mt-auto">
-        <div class="total-price">
-          <span>Total price: {{ calculateTotalPrice() }}</span>
-          <div class="btn-wrapper d-flex">
-            <router-link :to="{ name: 'checkout' }" class="checkout-btn"
-              >Check-out</router-link
+            <!-- modale per errore ordine -->
+
+            <!-- modal for error in order -->
+            <div
+              :class="{ show: showErrorModal.visible }"
+              v-if="showErrorModal && dish.id == showErrorModal.id"
+              class="modal modal-cart"
             >
-            <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Error</h5>
+                  </div>
+                  <div class="modal-body">
+                    <p>
+                      The cart contains items from a different restaurant. Do
+                      you want to clear the cart and continue with the new
+                      order?
+                    </p>
+                  </div>
+                  <div class="modal-footer">
+                    <button
+                      type="button"
+                      class="btn btn-secondary"
+                      @click="closeModal()"
+                    >
+                      Close
+                    </button>
+                    <button type="button" class="btn btn-info">
+                      <span @click="goToRestaurant()"
+                        >Go back to "{{ store.cartRestaurant }}" page</span
+                      >
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-warning"
+                      @click="resetCartAdd(dish)"
+                    >
+                      Clear Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <div v-if="store.error">
+        <h2 class="error-text">{{ this.error }}</h2>
+      </div>
+    </div>
+
+    <!-- Offcanvas -->
+    <div
+      class="offcanvas offcanvas-end w-50"
+      data-bs-backdrop="true"
+      tabindex="-1"
+      id="offcanvasExample"
+      aria-labelledby="offcanvasExampleLabel"
+    >
+      <div class="offcanvas-header d-flex align-items-center">
+        <h5 class="offcanvas-title" id="offcanvasExampleLabel">
+          Shopping cart
+        </h5>
+        <button
+          v-if="store.cart.length >= 1"
+          type="button"
+          class="button-reset-cart"
+          @click="clearCart()"
+        >
+          Reset Order
+        </button>
+      </div>
+      <div class="offcanvas-body d-flex flex-column">
+        <ul class="cart-list">
+          <li
+            class="cart-list-item"
+            v-for="(dish, index) in store.cart"
+            :key="index"
+          >
+            <div class="img-dish-wrapper">
+              <img :src="dish.image" alt="" />
+            </div>
+            <div class="primary-info">
+              <h5>
+                {{ dish.name }}
+              </h5>
+              <p>price: {{ formatPrice(dish.price) }}</p>
+            </div>
+            <div class="quantity-info">
+              <p>x{{ dish.quantity }}</p>
+              <div class="quantity-wrapper">
+                <div class="quantity-btn minus" @click="removeToCart(dish.id)">
+                  <i class="cart-icon" :class="['fas', 'fa-minus']"></i>
+                </div>
+                <div class="quantity-btn plus" @click="addToCart(dish.id)">
+                  <i class="cart-icon" :class="['fas', 'fa-plus']"></i>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="col-2"></div>
+        <div class="checkout-wrapper mt-auto">
+          <div class="total-price">
+            <span>Total price: {{ calculateTotalPrice() }}</span>
+            <div class="btn-wrapper d-flex">
+              <router-link :to="{ name: 'checkout' }" class="checkout-btn"
+                >Check-out</router-link
+              >
+              <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-  <app-modal :restaurant="restaurant" v-if="store.modal.show" />
+    <app-loader :loading="isLoading"></app-loader>
+    <app-modal :restaurant="restaurant" v-if="store.modal.show" />
+  </section>
 </template>
 
 <style lang="scss" scoped>
@@ -670,7 +689,7 @@ export default {
   gap: 3px;
   position: absolute;
   left: 0px;
-  top: 140px;
+  top: 18px;
   width: 60px;
   aspect-ratio: 1 / 1;
   background-color: rgba(255, 255, 255, 0.807);
@@ -713,5 +732,11 @@ export default {
   .show {
     display: block !important;
   }
+}
+
+// loader
+.loader-container {
+  position: relative;
+  min-height: 200px;
 }
 </style>
