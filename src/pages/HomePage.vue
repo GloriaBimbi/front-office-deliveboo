@@ -49,7 +49,7 @@ export default {
           } else {
             this.fetchRestaurant();
           }
-          // Construct URL with selected type names in the order they are selected
+          // Costruisci URL con i nomi dei tipi selezionati
           let selectedTypeNames = this.filters.map((filterId) => {
             let filterType = this.types.find((type) => type.id === filterId);
             return filterType ? this.getTypeName(filterType.id) : "";
@@ -61,19 +61,20 @@ export default {
     },
 
     clearFilters() {
-      let types = this.activeTypes;
       this.types.forEach((type) => (type.active = false));
       this.filters = [];
       this.fetchRestaurant();
 
-      // Remove 'type' parameter from URL
+      // Rimuovi i filtri dal local storage
+      localStorage.removeItem("filters");
+
+      // Rimuovi il parametro 'type' dall'URL
       let url = new URL(window.location.href);
       url.searchParams.delete("type");
       history.pushState({}, "", url);
     },
-
     fetchTypes() {
-      axios.get(api.baseUrl + `types`).then((response) => {
+      return axios.get(api.baseUrl + `types`).then((response) => {
         this.types = response.data;
         store.types = this.types;
       });
@@ -83,19 +84,20 @@ export default {
       type.active = !type.active;
 
       if (type.active) {
-        // If the type has just been activated, add it to the filters array
         if (!this.filters.includes(type.id)) {
           this.filters.push(type.id);
         }
       } else {
-        // If the type has been deactivated, remove it from the filters array
         let index = this.filters.indexOf(type.id);
         if (index !== -1) {
           this.filters.splice(index, 1);
         }
       }
 
-      // Construct URL with selected type names
+      // Salva i filtri nel local storage
+      localStorage.setItem("filters", JSON.stringify(this.filters));
+
+      // Aggiorna l'URL con i filtri selezionati
       let selectedTypeNames = this.filters.map((filterId) => {
         let filterType = this.types.find((type) => type.id === filterId);
         return filterType ? this.getTypeName(filterType.id) : "";
@@ -106,12 +108,9 @@ export default {
 
       this.fetchFilterRestaurant();
     },
-
     getTypeName(typeId) {
-      for (let type of this.filters) {
-        let type = this.types.find((t) => t.id === typeId);
-        return type ? type.name : ""; // Return the name of the type if found, otherwise an empty string
-      }
+      let type = this.types.find((t) => t.id === typeId);
+      return type ? type.name : "";
     },
   },
 
@@ -129,8 +128,22 @@ export default {
     },
   },
   created() {
-    this.fetchRestaurant();
-    this.fetchTypes();
+    this.fetchTypes().then(() => {
+      // Recupera i filtri dal local storage
+      let savedFilters = localStorage.getItem("filters");
+      if (savedFilters) {
+        this.filters = JSON.parse(savedFilters);
+        this.filters.forEach((filterId) => {
+          let filterType = this.types.find((type) => type.id === filterId);
+          if (filterType) {
+            filterType.active = true;
+          }
+        });
+        this.fetchFilterRestaurant();
+      } else {
+        this.fetchRestaurant();
+      }
+    });
   },
 };
 </script>
