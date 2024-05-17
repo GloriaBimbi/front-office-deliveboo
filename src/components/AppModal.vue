@@ -252,4 +252,23 @@ export default {
     }
   }
 }
+
+// media query for dish modal
+
+@media screen and (max-width: 768px) {
+  .my-modal {
+    min-height: 765px;
+
+    display: flex;
+    flex-direction: column;
+    .img-container {
+      max-width: 500px;
+      img {
+        max-width: 50%;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+  }
+}
 </style>
