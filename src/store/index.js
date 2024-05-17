@@ -26,4 +26,6 @@ export const store = reactive({
   checkoutCart: [],
   cart: JSON.parse(localStorage.getItem("cart")) || [],
   cartRestaurant: "",
+  currentOrders: JSON.parse(localStorage.getItem("currentOrders")) || [],
+  ordersHistory: JSON.parse(localStorage.getItem("ordersHistory")) || [],
 });

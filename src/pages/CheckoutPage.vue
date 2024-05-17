@@ -24,11 +24,6 @@ export default {
     };
   },
 
-  mounted() {
-    // Ottieni il token client quando il componente viene montato
-    this.getClientToken();
-  },
-
   methods: {
     calculateTotalPrice() {
       let totalPrice = 0;
@@ -122,13 +117,38 @@ export default {
                 cart: store.checkoutCart,
               })
               .then((response) => {
-                console.log(response.data); // Aggiunto il log per visualizzare response.data
-                router.push({
-                  name: "yourOrder",
-                });
+                // Creare un nuovo ordine con lo stato "Order Accepted"
+                const newOrder = {
+                  id: response.data.orderId,
+                  items: store.checkoutCart,
+                  totalPrice: this.calculateTotalPrice(),
+                  date: new Date().toISOString(),
+                  status: "Order Accepted",
+                  message: "Your order has been accepted.",
+                };
+
+                // Salva l'ordine corrente nel localStorage
+                let currentOrders =
+                  JSON.parse(localStorage.getItem("currentOrders")) || [];
+                currentOrders.push(newOrder);
+                localStorage.setItem(
+                  "currentOrders",
+                  JSON.stringify(currentOrders)
+                );
+
+                // Clear the current cart after successful order
+                store.checkoutCart = [];
+                localStorage.removeItem("cart");
+
+                // Emmetti un evento per notificare il componente degli ordini
+                this.$root.$emit("order-placed", newOrder);
+
+                // Redirect to the orders page
+                this.$router.push({ name: "yourOrder" });
               })
+
               .catch((error) => {
-                // Gestisci gli errori (es. pagamento fallito)
+                // Gestisci gli errori (ad esempio, pagamento fallito)
                 console.error("Errore durante il pagamento:", error);
               });
           }
@@ -144,7 +164,7 @@ export default {
   created() {
     const storedCart = localStorage.getItem("cart");
     store.checkoutCart = storedCart ? JSON.parse(storedCart) : [];
-
+    this.getClientToken();
     const button = document.querySelector("#submit-button");
   },
 };

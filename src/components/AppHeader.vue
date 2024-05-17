@@ -23,6 +23,10 @@ export default {
         <a href="http://127.0.0.1:8000/register" class="button" type="submit"
           >Register</a
         >
+
+        <router-link class="button" :to="{ name: 'yourOrder' }"
+          >Your orders</router-link
+        >
       </div>
     </div>
   </nav>

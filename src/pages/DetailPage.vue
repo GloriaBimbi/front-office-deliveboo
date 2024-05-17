@@ -40,6 +40,7 @@ export default {
       .then((response) => {
         this.restaurant = response.data;
         store.dishes = this.restaurant.dishes;
+        this.scrollToTop();
       })
       .finally(() => {
         this.isLoading = false;
@@ -54,6 +55,9 @@ export default {
       });
   },
   methods: {
+    scrollToTop() {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
     // method to increment number on cart icon in header
     basketIncrementCounter() {
       store.counter++;
@@ -87,6 +91,9 @@ export default {
     // CART
     // method to transform the title of the restaurant whose dishes are in the cart into a slug
     stringToSlug(str) {
+      if (!str) {
+        return ""; // O un valore predefinito in base alle tue esigenze
+      }
       str = str.replace(/^\s+|\s+$/g, ""); // Trim
       str = str.toLowerCase();
 
