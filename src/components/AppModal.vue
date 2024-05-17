@@ -267,6 +267,7 @@ export default {
     }
   }
 }
+
 // tablet media query
 @media screen and (max-width: 768px) {
   .my-modal {
