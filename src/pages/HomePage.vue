@@ -49,7 +49,7 @@ export default {
           } else {
             this.fetchRestaurant();
           }
-          // Construct URL with selected type names in the order they are selected
+          // Costruisci URL con i nomi dei tipi selezionati
           let selectedTypeNames = this.filters.map((filterId) => {
             let filterType = this.types.find((type) => type.id === filterId);
             return filterType ? this.getTypeName(filterType.id) : "";
@@ -61,19 +61,20 @@ export default {
     },
 
     clearFilters() {
-      let types = this.activeTypes;
       this.types.forEach((type) => (type.active = false));
       this.filters = [];
       this.fetchRestaurant();
 
-      // Remove 'type' parameter from URL
+      // Rimuovi i filtri dal local storage
+      localStorage.removeItem("filters");
+
+      // Rimuovi il parametro 'type' dall'URL
       let url = new URL(window.location.href);
       url.searchParams.delete("type");
       history.pushState({}, "", url);
     },
-
     fetchTypes() {
-      axios.get(api.baseUrl + `types`).then((response) => {
+      return axios.get(api.baseUrl + `types`).then((response) => {
         this.types = response.data;
         store.types = this.types;
       });
@@ -83,19 +84,20 @@ export default {
       type.active = !type.active;
 
       if (type.active) {
-        // If the type has just been activated, add it to the filters array
         if (!this.filters.includes(type.id)) {
           this.filters.push(type.id);
         }
       } else {
-        // If the type has been deactivated, remove it from the filters array
         let index = this.filters.indexOf(type.id);
         if (index !== -1) {
           this.filters.splice(index, 1);
         }
       }
 
-      // Construct URL with selected type names
+      // Salva i filtri nel local storage
+      localStorage.setItem("filters", JSON.stringify(this.filters));
+
+      // Aggiorna l'URL con i filtri selezionati
       let selectedTypeNames = this.filters.map((filterId) => {
         let filterType = this.types.find((type) => type.id === filterId);
         return filterType ? this.getTypeName(filterType.id) : "";
@@ -106,12 +108,9 @@ export default {
 
       this.fetchFilterRestaurant();
     },
-
     getTypeName(typeId) {
-      for (let type of this.filters) {
-        let type = this.types.find((t) => t.id === typeId);
-        return type ? type.name : ""; // Return the name of the type if found, otherwise an empty string
-      }
+      let type = this.types.find((t) => t.id === typeId);
+      return type ? type.name : "";
     },
   },
 
@@ -129,8 +128,22 @@ export default {
     },
   },
   created() {
-    this.fetchRestaurant();
-    this.fetchTypes();
+    this.fetchTypes().then(() => {
+      // Recupera i filtri dal local storage
+      let savedFilters = localStorage.getItem("filters");
+      if (savedFilters) {
+        this.filters = JSON.parse(savedFilters);
+        this.filters.forEach((filterId) => {
+          let filterType = this.types.find((type) => type.id === filterId);
+          if (filterType) {
+            filterType.active = true;
+          }
+        });
+        this.fetchFilterRestaurant();
+      } else {
+        this.fetchRestaurant();
+      }
+    });
   },
 };
 </script>
@@ -141,10 +154,25 @@ export default {
 
     <div class="catch-phrase">
       <h1>Deliveboo</h1>
-      <p>
-        "We deliver flavor straight to your door: the food you want, when you
-        want it."
-      </p>
+      <p>"Enjoy the food you <strong>love!</strong>"</p>
+      <ul class="d-none d-md-block">
+        <li>Connect with the flavors you crave, right at your doorstep.</li>
+        <li>
+          A vast selection of culinary delights from your favorite local
+          eateries and beyond.
+        </li>
+        <li>Satisfaction is just a few clicks away</li>
+      </ul>
+      <!-- <p class="fs-6">
+        Our mission at Deliveboo is simple yet vital: to seamlessly connect you
+        with the flavors you crave, right at your doorstep. We understand the
+        importance of convenience without compromising on taste, which is why
+        we've curated a diverse selection of culinary delights from your
+        favorite local eateries and beyond. Whether it's a quick bite during a
+        busy workday or a leisurely dinner at home, our platform ensures that
+        you can enjoy the food you love, precisely when you desire it. With
+        Deliveboo, satisfaction is just a few clicks away.
+      </p> -->
     </div>
   </section>
   <div class="container-md">
@@ -245,15 +273,28 @@ export default {
   }
   h1 {
     font-size: clamp(1.5rem, 2rem, 4rem);
-    color: black;
+    color: #0073de;
+    text-align: center;
+    font-weight: 700;
   }
   p {
+    text-align: center;
     font-size: clamp(1rem, 1.5rem, 2rem);
     color: black;
     // background-color: white;
 
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    strong {
+      color: #0073de;
+    }
+  }
+  ul {
+    color: black;
+    font-size: clamp(0.5rem, 1rem, 1rem);
+    li {
+      margin-bottom: 1rem;
+    }
   }
 }
 

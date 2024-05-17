@@ -257,7 +257,7 @@ export default {
 <template>
   <section class="loader-container">
     <!-- go back to homepage on click -->
-    <a @click="$router.replace({ path: '/' })" class="btn back-button mb-2">
+    <a @click="$router.go(-1)" class="btn back-button mb-2">
       <i class="fa-solid fa-arrow-rotate-left"></i>
       <span class="back-button-label"> Back to Home</span>
     </a>

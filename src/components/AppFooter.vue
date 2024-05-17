@@ -4,7 +4,7 @@
   <footer class="footer">
     <div class="footer-links">
       <div class="container">
-        <a href="#">About Us</a>
+        <router-link :to="{ name: 'AboutUsPage' }">About Us</router-link>
         <a href="http://127.0.0.1:8000">Create Your Restaurant</a>
       </div>
     </div>
@@ -16,6 +16,7 @@
 
 <style lang="scss" scoped>
 .footer {
+  height: 100px;
   background: rgb(12, 22, 74);
 
   padding: 20px;

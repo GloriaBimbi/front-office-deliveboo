@@ -4,6 +4,7 @@ import HomePage from "./pages/HomePage.vue";
 import DetailPage from "./pages/DetailPage.vue";
 import CheckoutPage from "./pages/CheckoutPage.vue";
 import OrderPage from "./pages/OrderPage.vue";
+import AboutUsPage from "./pages/AboutUsPage.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -28,6 +29,11 @@ const router = createRouter({
       name: "yourOrder",
       component: OrderPage,
       props: true,
+    },
+    {
+      path: "/about-us",
+      name: "AboutUsPage",
+      component: AboutUsPage,
     },
   ],
 });
