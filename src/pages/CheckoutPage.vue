@@ -1,6 +1,7 @@
 <script>
 import { api, store } from "../store";
 import axios from "axios";
+import { router } from "../router";
 export default {
   //   props: { restaurant: Object },
 
@@ -71,15 +72,11 @@ export default {
                   return;
                 }
                 this.dropinInstance = dropinInstance;
-                // Aggiungi un gestore per l'evento di submit del form...
               }
             );
           } else {
             console.error("Element with ID 'dropin-container' not found.");
           }
-          // Aggiungi un gestore per l'evento di submit del form
-          // Quando l'utente invia il form, ottieni i dettagli del pagamento
-          // dal widget Drop-in UI e invia i dati al backend per l'elaborazione del pagamento
           const form = document.getElementById("payment-form");
           form.addEventListener("submit", (event) => {
             event.preventDefault();
@@ -93,21 +90,6 @@ export default {
                   );
                   return;
                 }
-
-                // Invia i dati del pagamento al backend per l'elaborazione
-                //   axios
-                //     .post(api.baseUrl + "process-payment", {
-                //       paymentMethodNonce: payload.nonce,
-                //       // Altri dettagli del pagamento, come l'importo, l'ID ordine, ecc.
-                //     })
-                //     .then((response) => {
-                //       // Gestisci la risposta dal backend (es. conferma di pagamento)
-                //       console.log("i dati sono stati inviati");
-                //     })
-                //     .catch((error) => {
-                //       // Gestisci gli errori (es. pagamento fallito)
-                //       console.log("pagamento fallito");
-                //     });
               }
             );
           });
@@ -130,6 +112,8 @@ export default {
               return;
             }
 
+            // store.formData = this.formData;
+
             axios
               .post(api.baseUrl + "process-payment", {
                 paymentMethodNonce: payload.nonce,
@@ -138,8 +122,10 @@ export default {
                 cart: store.checkoutCart,
               })
               .then((response) => {
-                // Gestisci la risposta dal backend (es. conferma di pagamento)
-                console.log("i dati sono stati inviati");
+                console.log(response.data); // Aggiunto il log per visualizzare response.data
+                router.push({
+                  name: "yourOrder",
+                });
               })
               .catch((error) => {
                 // Gestisci gli errori (es. pagamento fallito)

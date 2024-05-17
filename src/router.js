@@ -25,8 +25,9 @@ const router = createRouter({
     },
     {
       path: "/yourOrder",
-      name: "order",
+      name: "yourOrder",
       component: OrderPage,
+      props: true,
     },
   ],
 });
