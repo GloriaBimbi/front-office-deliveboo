@@ -81,6 +81,7 @@ export default {
     // method to close dish modal
     closeModal() {
       this.showErrorModal.visible = false;
+      this.showErrorModal.id = null;
     },
 
     // CART
