@@ -154,10 +154,25 @@ export default {
 
     <div class="catch-phrase">
       <h1>Deliveboo</h1>
-      <p>
-        "We deliver flavor straight to your door: the food you want, when you
-        want it."
-      </p>
+      <p>"Enjoy the food you <strong>love!</strong>"</p>
+      <ul class="d-none d-md-block">
+        <li>Connect with the flavors you crave, right at your doorstep.</li>
+        <li>
+          A vast selection of culinary delights from your favorite local
+          eateries and beyond.
+        </li>
+        <li>Satisfaction is just a few clicks away</li>
+      </ul>
+      <!-- <p class="fs-6">
+        Our mission at Deliveboo is simple yet vital: to seamlessly connect you
+        with the flavors you crave, right at your doorstep. We understand the
+        importance of convenience without compromising on taste, which is why
+        we've curated a diverse selection of culinary delights from your
+        favorite local eateries and beyond. Whether it's a quick bite during a
+        busy workday or a leisurely dinner at home, our platform ensures that
+        you can enjoy the food you love, precisely when you desire it. With
+        Deliveboo, satisfaction is just a few clicks away.
+      </p> -->
     </div>
   </section>
   <div class="container-md">
@@ -258,15 +273,28 @@ export default {
   }
   h1 {
     font-size: clamp(1.5rem, 2rem, 4rem);
-    color: black;
+    color: #0073de;
+    text-align: center;
+    font-weight: 700;
   }
   p {
+    text-align: center;
     font-size: clamp(1rem, 1.5rem, 2rem);
     color: black;
     // background-color: white;
 
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    strong {
+      color: #0073de;
+    }
+  }
+  ul {
+    color: black;
+    font-size: clamp(0.5rem, 1rem, 1rem);
+    li {
+      margin-bottom: 1rem;
+    }
   }
 }
 

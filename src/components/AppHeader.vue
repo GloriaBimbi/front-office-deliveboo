@@ -30,6 +30,7 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
+  height: 75px;
   z-index: 1000;
   background: rgb(12, 22, 74);
   .container-logo {
