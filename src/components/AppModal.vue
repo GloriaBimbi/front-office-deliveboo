@@ -271,15 +271,12 @@ export default {
 // tablet media query
 @media screen and (max-width: 768px) {
   .my-modal {
-    min-height: 700px;
+    min-height: 830px;
     display: flex;
     flex-direction: column;
     .img-container {
       max-height: 200px;
       padding-left: 20px;
-      img {
-        object-fit: cover;
-      }
     }
   }
 }
