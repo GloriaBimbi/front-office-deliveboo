@@ -113,18 +113,14 @@ export default {
               </div>
             </li>
             <li class="error">
-              <div v-if="wrongRestaurant == true" class="error">
+              <div v-if="wrongRestaurant == true" class="error-message">
                 Your order can only include dishes from the same restaurant.
               </div>
-              <button
-                v-if="wrongRestaurant == true"
-                type="button"
-                class="btn btn-info"
-              >
+              <div v-if="wrongRestaurant == true" class="info-button">
                 <span @click="goToRestaurant()"
                   >Go back to "{{ store.cartRestaurant }}" page</span
                 >
-              </button>
+              </div>
             </li>
           </ul>
         </div>
@@ -239,15 +235,56 @@ export default {
         }
 
         .error {
-          color: red;
-          text-align: center;
-          margin-top: 10px;
+          margin-top: 30px;
           display: flex;
           justify-content: center;
+          align-items: center;
           flex-direction: column;
+          gap: 10px;
+
+          .error-message {
+            color: red;
+            text-align: center;
+          }
+
+          .info-button {
+            cursor: pointer;
+            border-radius: 0;
+            padding: 0.5rem 2rem;
+            text-decoration: none;
+            border: 1px solid #0099ff;
+            background-color: white;
+            color: #0099ff;
+            width: max-content;
+            &:hover {
+              // border: none;
+              color: white;
+              background-color: #0099ff;
+            }
+          }
         }
       }
     }
+  }
+}
+
+// tablet media query
+@media screen and (max-width: 768px) {
+  .my-modal {
+    min-height: 830px;
+    display: flex;
+    flex-direction: column;
+    .img-container {
+      max-height: 200px;
+      padding-left: 20px;
+    }
+  }
+}
+
+// mobile media query
+@media screen and (max-width: 576px) {
+  .my-modal {
+    min-height: 800px;
   }
 }
 </style>
