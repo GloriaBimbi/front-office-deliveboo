@@ -430,9 +430,7 @@ export default {
           <div class="total-price">
             <span>Total price: {{ calculateTotalPrice() }}</span>
             <div class="btn-wrapper d-flex">
-              <router-link :to="{ name: 'checkout' }" class="checkout-btn"
-                >Check-out</router-link
-              >
+              <a href="\checkout" class="checkout-btn"> Check-out </a>
               <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
             </div>
           </div>
