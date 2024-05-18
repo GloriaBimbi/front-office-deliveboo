@@ -17,11 +17,8 @@ export default {
         <img src="../assets/Group-30.png" alt="logo" />
       </div>
       <div class="d-flex gap-3">
-        <a href="http://127.0.0.1:8000/login" class="button" type="submit"
-          >Log in</a
-        >
-        <a href="http://127.0.0.1:8000/register" class="button" type="submit"
-          >Register</a
+        <a href="http://127.0.0.1:8000/" class="button" type="submit"
+          >Join Us</a
         >
 
         <router-link class="button" :to="{ name: 'yourOrder' }"

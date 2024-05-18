@@ -136,6 +136,7 @@ export default {
                   JSON.stringify(currentOrders)
                 );
 
+                store.cart = [];
                 // Clear the current cart after successful order
                 store.checkoutCart = [];
                 localStorage.removeItem("cart");
@@ -184,6 +185,7 @@ export default {
                     >Firstname</label
                   >
                   <input
+                    autocomplete="off"
                     v-model="formData.name"
                     type="text"
                     name="name"
@@ -196,6 +198,7 @@ export default {
                     >Lastname</label
                   >
                   <input
+                    autocomplete="off"
                     v-model="formData.lastname"
                     type="text"
                     name="surname"
@@ -206,6 +209,7 @@ export default {
                 <div class="input-email">
                   <label for="email" class="form-label mb-0 mt-2">Email</label>
                   <input
+                    autocomplete="off"
                     v-model="formData.email"
                     type="email"
                     name="email"
@@ -216,6 +220,7 @@ export default {
                 <div class="input-phone">
                   <label for="phone" class="form-label mb-0 mt-2">Phone</label>
                   <input
+                    autocomplete="off"
                     v-model="formData.phone"
                     type="phone"
                     name="phone"
@@ -230,6 +235,7 @@ export default {
                     >Address Street</label
                   >
                   <input
+                    autocomplete="off"
                     v-model="formData.addressStreet"
                     type="text"
                     name="address-street"
@@ -244,6 +250,7 @@ export default {
                         >Civic</label
                       >
                       <input
+                        autocomplete="off"
                         v-model="formData.addressCivic"
                         type="text"
                         name="address-civic"
@@ -258,6 +265,7 @@ export default {
                         >Cap</label
                       >
                       <input
+                        autocomplete="off"
                         v-model="formData.addressCap"
                         type="number"
                         name="address-cap"
@@ -272,6 +280,7 @@ export default {
                         >City</label
                       >
                       <input
+                        autocomplete="off"
                         v-model="formData.addressCity"
                         type="text"
                         name="address-city"
@@ -286,6 +295,7 @@ export default {
                         >Country</label
                       >
                       <input
+                        autocomplete="off"
                         v-model="formData.addressCountry"
                         type="text"
                         name="address-country"
@@ -296,7 +306,7 @@ export default {
                   </div>
                 </div>
                 <!-- braintree payment system  -->
-                <div id="dropin-container"></div>
+                <div id="dropin-container" name="dropin-container"></div>
                 <button
                   id="submit-button"
                   class="button button--small button--green"

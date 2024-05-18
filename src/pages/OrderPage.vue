@@ -46,6 +46,8 @@ export default {
 
   created() {
     this.refreshOrders();
+    console.log(this.ordersHistory);
+    console.log();
     setTimeout(() => {
       this.currentOrders.forEach((order) => {
         this.moveOrderToHistory(order);
@@ -58,8 +60,8 @@ export default {
 </script>
 
 <template>
-  <div>
-    <h1>Your Orders</h1>
+  <div class="container">
+    <h2>Your Orders</h2>
 
     <div class="row" v-if="this.currentOrders.length">
       <div
@@ -101,17 +103,15 @@ export default {
       <p>You have no current orders.</p>
     </div>
 
+    <h2>Your Order History</h2>
     <div class="row" v-if="this.ordersHistory.length">
-      <a class="btn btn-danger" @click="clearOrderHistory">
-        Clear Order History
-      </a>
       <div
         class="col-12 order-details"
         v-for="(order, index) in ordersHistory"
         :key="index"
       >
         <div>
-          <h1>Order History</h1>
+          <h3>{{ order.items[0].restaurant }}</h3>
           <p>Order Placed - {{ formatDate(order.date) }}</p>
           <ul class="cart-list">
             <li
@@ -139,7 +139,14 @@ export default {
           </div>
         </div>
       </div>
+      <button
+        class="btn btn-link text-danger text-end"
+        @click="clearOrderHistory"
+      >
+        Clear Order History
+      </button>
     </div>
+
     <div v-else>
       <p>No previous orders.</p>
     </div>
