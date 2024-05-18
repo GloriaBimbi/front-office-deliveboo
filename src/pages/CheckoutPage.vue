@@ -205,6 +205,19 @@ export default {
     clearErrors() {
       this.errors = {};
     },
+    generateDummyData() {
+      this.formData = {
+        name: "Mario",
+        lastname: "Rossi",
+        addressStreet: "Viale",
+        addressCivic: "123",
+        addressCap: "12345",
+        addressCity: "Roma",
+        addressCountry: "Italia",
+        phone: "1234567890",
+        email: "mario@mario",
+      };
+    },
   },
 
   created() {
@@ -223,7 +236,12 @@ export default {
       >
         <div class="col form-col">
           <div class="py-5 my-5">
-            <h3>Insert your data</h3>
+            <div class="title-wrapper d-flex justify-content-between">
+              <h3>Insert your data</h3>
+              <span @click="generateDummyData()" class="btn btn-link text-info">
+                Generate fake data:
+              </span>
+            </div>
             <form id="payment-form" @submit="submitPayment">
               <div class="general-user-info">
                 <div class="input-name">
