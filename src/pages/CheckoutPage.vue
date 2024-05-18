@@ -3,24 +3,23 @@ import { api, store } from "../store";
 import axios from "axios";
 import { router } from "../router";
 export default {
-  //   props: { restaurant: Object },
-
   data() {
     return {
       store,
       dropinInstance: null,
       clientToken: null,
       formData: {
-        name: "gia",
-        lastname: "kjb",
-        addressStreet: "kjb",
-        addressCivic: "3",
-        addressCap: "23454",
-        addressCity: "sgf",
-        addressCountry: "dfg",
-        phone: "3245345343",
-        email: "dfg@mail.com",
+        name: "",
+        lastname: "",
+        addressStreet: "",
+        addressCivic: "",
+        addressCap: "",
+        addressCity: "",
+        addressCountry: "",
+        phone: "",
+        email: "",
       },
+      errors: {},
     };
   },
 
@@ -33,7 +32,6 @@ export default {
       return this.formatPrice(totalPrice);
     },
 
-    // method to convert price
     formatPrice(price) {
       return new Intl.NumberFormat("en-US", {
         style: "currency",
@@ -46,17 +44,14 @@ export default {
       axios
         .get(api.baseUrl + "generate-client-token")
         .then((response) => {
-          // Memorizza il token client ricevuto
           this.clientToken = response.data.clientToken;
-          console.log(response.data);
 
-          // Inizializza il client Braintree dopo aver ottenuto il token client
           const dropinContainer = document.getElementById("dropin-container");
           if (dropinContainer) {
             braintree.dropin.create(
               {
                 authorization: this.clientToken,
-                container: "#dropin-container", // ID del div dove verrà mostrato il widget Drop-in UI
+                container: "#dropin-container",
               },
               (dropinErr, dropinInstance) => {
                 if (dropinErr) {
@@ -72,93 +67,144 @@ export default {
           } else {
             console.error("Element with ID 'dropin-container' not found.");
           }
-          const form = document.getElementById("payment-form");
-          form.addEventListener("submit", (event) => {
-            event.preventDefault();
-
-            this.dropinInstance.requestPaymentMethod(
-              (requestPaymentMethodErr, payload) => {
-                if (requestPaymentMethodErr) {
-                  console.error(
-                    "Errore durante la richiesta del metodo di pagamento:",
-                    requestPaymentMethodErr
-                  );
-                  return;
-                }
-              }
-            );
-          });
         })
         .catch((error) => {
           console.error("Errore durante il recupero del token client:", error);
         });
     },
 
-    submitPayment() {
-      // Inizializza il client Braintree con il token client ottenuto
-      if (this.clientToken) {
-        this.dropinInstance.requestPaymentMethod(
-          (requestPaymentMethodErr, payload) => {
-            if (requestPaymentMethodErr) {
-              console.error(
-                "Errore durante la richiesta del metodo di pagamento:",
-                requestPaymentMethodErr
-              );
-              return;
-            }
+    submitPayment(event) {
+      event.preventDefault();
+      this.clearErrors();
 
-            // store.formData = this.formData;
-
-            axios
-              .post(api.baseUrl + "process-payment", {
-                paymentMethodNonce: payload.nonce,
-                amount: this.calculateTotalPrice(),
-                formData: this.formData,
-                cart: store.checkoutCart,
-              })
-              .then((response) => {
-                // Creare un nuovo ordine con lo stato "Order Accepted"
-                const newOrder = {
-                  id: response.data.orderId,
-                  items: store.checkoutCart,
-                  totalPrice: this.calculateTotalPrice(),
-                  date: new Date().toISOString(),
-                  status: "Order Accepted",
-                  message: "Your order has been accepted.",
-                };
-
-                // Salva l'ordine corrente nel localStorage
-                let currentOrders =
-                  JSON.parse(localStorage.getItem("currentOrders")) || [];
-                currentOrders.push(newOrder);
-                localStorage.setItem(
-                  "currentOrders",
-                  JSON.stringify(currentOrders)
+      if (this.validateForm()) {
+        if (this.clientToken && this.dropinInstance) {
+          this.dropinInstance.requestPaymentMethod(
+            (requestPaymentMethodErr, payload) => {
+              if (requestPaymentMethodErr) {
+                console.error(
+                  "Errore durante la richiesta del metodo di pagamento:",
+                  requestPaymentMethodErr
                 );
+                return;
+              }
 
-                store.cart = [];
-                // Clear the current cart after successful order
-                store.checkoutCart = [];
-                localStorage.removeItem("cart");
+              axios
+                .post(api.baseUrl + "process-payment", {
+                  paymentMethodNonce: payload.nonce,
+                  amount: this.calculateTotalPrice(),
+                  formData: this.formData,
+                  cart: store.checkoutCart,
+                })
+                .then((response) => {
+                  const newOrder = {
+                    id: response.data.orderId,
+                    items: store.checkoutCart,
+                    totalPrice: this.calculateTotalPrice(),
+                    date: new Date().toISOString(),
+                    status: "Order Accepted",
+                    message: "Your order has been accepted.",
+                  };
 
-                // Emmetti un evento per notificare il componente degli ordini
-                this.$root.$emit("order-placed", newOrder);
+                  let currentOrders =
+                    JSON.parse(localStorage.getItem("currentOrders")) || [];
+                  currentOrders.push(newOrder);
+                  localStorage.setItem(
+                    "currentOrders",
+                    JSON.stringify(currentOrders)
+                  );
 
-                // Redirect to the orders page
-                this.$router.push({ name: "yourOrder" });
-              })
+                  store.cart = [];
+                  store.checkoutCart = [];
+                  localStorage.removeItem("cart");
 
-              .catch((error) => {
-                // Gestisci gli errori (ad esempio, pagamento fallito)
-                console.error("Errore durante il pagamento:", error);
-              });
-          }
-        );
-      } else {
-        console.error(
-          "Token client non disponibile. Impossibile inizializzare il client Braintree."
-        );
+                  this.$root.$emit("order-placed", newOrder);
+                  this.$router.push({ name: "yourOrder" });
+                })
+                .catch((error) => {
+                  console.error("Errore durante il pagamento:", error);
+                });
+            }
+          );
+        } else {
+          console.error(
+            "Token client non disponibile. Impossibile inizializzare il client Braintree."
+          );
+        }
       }
+    },
+
+    validateForm() {
+      let isValid = true;
+      this.errors = {};
+
+      if (!this.formData.name || this.formData.name.length > 255) {
+        this.errors.name =
+          "First name is required and must be less than 255 characters.";
+        isValid = false;
+      }
+      if (!this.formData.lastname || this.formData.lastname.length > 255) {
+        this.errors.lastname =
+          "Last name is required and must be less than 255 characters.";
+        isValid = false;
+      }
+      if (
+        !this.formData.email ||
+        !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.formData.email) ||
+        this.formData.email.length > 255
+      ) {
+        this.errors.email =
+          "A valid email is required and must be less than 255 characters.";
+        isValid = false;
+      }
+      if (!this.formData.phone || !/^\d{9,10}$/.test(this.formData.phone)) {
+        this.errors.phone =
+          "Phone is required and must be a numeric value between 9 and 10 digits.";
+        isValid = false;
+      }
+      if (
+        !this.formData.addressStreet ||
+        this.formData.addressStreet.length > 255
+      ) {
+        this.errors.addressStreet =
+          "Address street is required and must be less than 255 characters.";
+        isValid = false;
+      }
+      if (
+        !this.formData.addressCivic ||
+        this.formData.addressCivic.length > 10
+      ) {
+        this.errors.addressCivic =
+          "Civic number is required and must be less than 10 characters.";
+        isValid = false;
+      }
+      if (!this.formData.addressCap || this.formData.addressCap.length !== 5) {
+        this.errors.addressCap =
+          "Cap is required and must be exactly 5 characters.";
+        isValid = false;
+      }
+      if (
+        !this.formData.addressCity ||
+        this.formData.addressCity.length > 100
+      ) {
+        this.errors.addressCity =
+          "City is required and must be less than 100 characters.";
+        isValid = false;
+      }
+      if (
+        !this.formData.addressCountry ||
+        this.formData.addressCountry.length > 100
+      ) {
+        this.errors.addressCountry =
+          "Country is required and must be less than 100 characters.";
+        isValid = false;
+      }
+
+      return isValid;
+    },
+
+    clearErrors() {
+      this.errors = {};
     },
   },
 
@@ -166,7 +212,6 @@ export default {
     const storedCart = localStorage.getItem("cart");
     store.checkoutCart = storedCart ? JSON.parse(storedCart) : [];
     this.getClientToken();
-    const button = document.querySelector("#submit-button");
   },
 };
 </script>
@@ -174,11 +219,13 @@ export default {
 <template>
   <div class="wrapper-checkout">
     <div class="container">
-      <div class="row row-cols-2 g-5">
+      <div
+        class="row row-cols-1 row-cols-md-2 g-5 flex-column-reverse flex-md-row"
+      >
         <div class="col form-col">
           <div class="py-5 my-5">
             <h3>Insert your data</h3>
-            <form id="payment-form">
+            <form id="payment-form" @submit="submitPayment">
               <div class="general-user-info">
                 <div class="input-name">
                   <label for="name" class="form-label mb-0 mt-2"
@@ -191,7 +238,9 @@ export default {
                     name="name"
                     id="name"
                     class="form-control"
+                    required
                   />
+                  <div class="error" v-if="errors.name">{{ errors.name }}</div>
                 </div>
                 <div class="input-surname">
                   <label for="surname" class="form-label mb-0 mt-2"
@@ -204,7 +253,11 @@ export default {
                     name="surname"
                     id="surname"
                     class="form-control"
+                    required
                   />
+                  <div class="error" v-if="errors.lastname">
+                    {{ errors.lastname }}
+                  </div>
                 </div>
                 <div class="input-email">
                   <label for="email" class="form-label mb-0 mt-2">Email</label>
@@ -215,18 +268,26 @@ export default {
                     name="email"
                     id="email"
                     class="form-control"
+                    required
                   />
+                  <div class="error" v-if="errors.email">
+                    {{ errors.email }}
+                  </div>
                 </div>
                 <div class="input-phone">
                   <label for="phone" class="form-label mb-0 mt-2">Phone</label>
                   <input
                     autocomplete="off"
                     v-model="formData.phone"
-                    type="phone"
+                    type="text"
                     name="phone"
                     id="phone"
                     class="form-control"
+                    required
                   />
+                  <div class="error" v-if="errors.phone">
+                    {{ errors.phone }}
+                  </div>
                 </div>
               </div>
               <div class="address-user-info my-3">
@@ -241,9 +302,13 @@ export default {
                     name="address-street"
                     id="address-street"
                     class="form-control"
+                    required
                   />
+                  <div class="error" v-if="errors.addressStreet">
+                    {{ errors.addressStreet }}
+                  </div>
                 </div>
-                <div class="row row-cols-4 g-2 mb-3">
+                <div class="row row-cols-1 row-cols-md-2 g-2 mb-3">
                   <div class="col">
                     <div class="input-address-civic">
                       <label for="address-civic" class="form-label mb-0 mt-2"
@@ -256,7 +321,11 @@ export default {
                         name="address-civic"
                         id="address-civic"
                         class="form-control"
+                        required
                       />
+                      <div class="error" v-if="errors.addressCivic">
+                        {{ errors.addressCivic }}
+                      </div>
                     </div>
                   </div>
                   <div class="col">
@@ -267,11 +336,15 @@ export default {
                       <input
                         autocomplete="off"
                         v-model="formData.addressCap"
-                        type="number"
+                        type="text"
                         name="address-cap"
                         id="address-cap"
                         class="form-control"
+                        required
                       />
+                      <div class="error" v-if="errors.addressCap">
+                        {{ errors.addressCap }}
+                      </div>
                     </div>
                   </div>
                   <div class="col">
@@ -286,7 +359,11 @@ export default {
                         name="address-city"
                         id="address-city"
                         class="form-control"
+                        required
                       />
+                      <div class="error" v-if="errors.addressCity">
+                        {{ errors.addressCity }}
+                      </div>
                     </div>
                   </div>
                   <div class="col">
@@ -301,7 +378,11 @@ export default {
                         name="address-country"
                         id="address-country"
                         class="form-control"
+                        required
                       />
+                      <div class="error" v-if="errors.addressCountry">
+                        {{ errors.addressCountry }}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -310,7 +391,7 @@ export default {
                 <button
                   id="submit-button"
                   class="button button--small button--green"
-                  @click="submitPayment()"
+                  type="submit"
                 >
                   Purchase
                 </button>
@@ -342,7 +423,7 @@ export default {
             <div class="checkout-wrapper mt-auto">
               <div class="total-price d-flex align-items-center gap-3">
                 <h4>Total price:</h4>
-                <span> {{ calculateTotalPrice() }}</span>
+                <span>{{ calculateTotalPrice() }}</span>
               </div>
             </div>
           </div>
@@ -448,10 +529,6 @@ export default {
 
 .button--green:hover {
   background-color: #8bdda8;
-  color: white;
-}
-
-.form-label {
   color: white;
 }
 </style>
