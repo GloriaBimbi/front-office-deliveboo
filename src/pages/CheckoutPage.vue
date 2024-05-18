@@ -40,6 +40,24 @@ export default {
       }).format(price);
     },
 
+    generateDummyData() {
+      this.formData = {
+        name: "Mario",
+        lastname: "Rossi",
+        addressStreet: "Viale",
+        addressCivic: "123",
+        addressCap: "12345",
+        addressCity: "Roma",
+        addressCountry: "Italia",
+        phone: "1234567890",
+        email: "mario@mario.com",
+      };
+
+      this.$nextTick(() => {
+        console.log("Dummy data generated:", this.formData);
+      });
+    },
+
     getClientToken() {
       axios
         .get(api.baseUrl + "generate-client-token")
@@ -205,19 +223,6 @@ export default {
 
     clearErrors() {
       this.errors = {};
-    },
-    generateDummyData() {
-      this.formData = {
-        name: "Mario",
-        lastname: "Rossi",
-        addressStreet: "Viale",
-        addressCivic: "123",
-        addressCap: "12345",
-        addressCity: "Roma",
-        addressCountry: "Italia",
-        phone: "1234567890",
-        email: "mario@mario",
-      };
     },
   },
 
