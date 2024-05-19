@@ -23,13 +23,24 @@ export default {
   },
 
   methods: {
-    fetchRestaurant(endpoint = api.baseUrl + `restaurants`) {
+    fetchRestaurant(endpoint = api.baseUrl + "restaurants") {
       this.isLoading = true;
       axios
         .get(endpoint)
         .then((response) => {
-          store.restaurants = response.data.data;
-          this.pagination = response.data.links;
+          if (
+            response.data.result &&
+            response.data.result.data &&
+            response.data.result.links
+          ) {
+            store.restaurants = response.data.result.data;
+            this.pagination = response.data.result.links;
+          } else {
+            console.error("La risposta dell'API non contiene i dati previsti.");
+          }
+        })
+        .catch((error) => {
+          console.error("Errore durante il recupero dei ristoranti:", error);
         })
         .finally(() => {
           this.isLoading = false;
