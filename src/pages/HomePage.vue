@@ -28,13 +28,9 @@ export default {
       axios
         .get(endpoint)
         .then((response) => {
-          if (
-            response.data.result &&
-            response.data.result.data &&
-            response.data.result.links
-          ) {
-            store.restaurants = response.data.result.data;
-            this.pagination = response.data.result.links;
+          if (response.data.data && response.data.links) {
+            store.restaurants = response.data.data;
+            this.pagination = response.data.links;
           } else {
             console.error("La risposta dell'API non contiene i dati previsti.");
           }
@@ -74,7 +70,6 @@ export default {
     clearFilters() {
       this.types.forEach((type) => (type.active = false));
       this.filters = [];
-      this.fetchRestaurant();
 
       // Rimuovi i filtri dal local storage
       localStorage.removeItem("filters");
@@ -83,7 +78,11 @@ export default {
       let url = new URL(window.location.href);
       url.searchParams.delete("type");
       history.pushState({}, "", url);
+
+      // Ricarica tutti i ristoranti senza filtri
+      this.fetchRestaurant();
     },
+
     fetchTypes() {
       return axios.get(api.baseUrl + `types`).then((response) => {
         this.types = response.data;
@@ -174,16 +173,6 @@ export default {
         </li>
         <li>Satisfaction is just a few clicks away</li>
       </ul>
-      <!-- <p class="fs-6">
-        Our mission at Deliveboo is simple yet vital: to seamlessly connect you
-        with the flavors you crave, right at your doorstep. We understand the
-        importance of convenience without compromising on taste, which is why
-        we've curated a diverse selection of culinary delights from your
-        favorite local eateries and beyond. Whether it's a quick bite during a
-        busy workday or a leisurely dinner at home, our platform ensures that
-        you can enjoy the food you love, precisely when you desire it. With
-        Deliveboo, satisfaction is just a few clicks away.
-      </p> -->
     </div>
   </section>
   <div class="container-md">
