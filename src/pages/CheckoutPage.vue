@@ -472,49 +472,6 @@ export default {
   }
 }
 .order-details {
-  .cart-list {
-    max-height: 700px;
-    overflow: auto;
-    padding: 0;
-    list-style-type: none;
-    .cart-list-item {
-      display: flex;
-      gap: 0.5rem;
-      border-block: 1px solid rgba(0, 0, 0);
-      padding: 0.5rem;
-
-      .img-dish-wrapper {
-        width: 100px;
-        height: 100px;
-        img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-      }
-
-      .primary-info {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        padding-block: 0.5rem;
-        p {
-          margin-bottom: 0;
-        }
-      }
-
-      .quantity-info {
-        display: flex;
-        margin-left: auto;
-        flex-direction: column;
-        justify-content: space-between;
-        h4 {
-          color: black;
-          font-weight: medium;
-        }
-      }
-    }
-  }
   .checkout-wrapper {
     padding: 0.5rem;
   }

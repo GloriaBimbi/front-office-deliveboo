@@ -89,46 +89,6 @@
 </template>
 
 <style lang="scss" scoped>
-.back-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3px;
-  position: absolute;
-  left: 0px;
-  top: 18px;
-  width: 60px;
-  aspect-ratio: 1 / 1;
-  background-color: rgba(255, 255, 255, 0.807);
-  font-weight: bold;
-  border-radius: 0px;
-  z-index: 1;
-  opacity: 0.5;
-  -webkit-box-shadow: 5px 5px 16px -5px rgba(0, 0, 0, 0.53);
-  box-shadow: 13px 13px 16px -5px rgba(0, 0, 0, 0.53);
-  a {
-    cursor: pointer;
-    text-decoration: none;
-  }
-  .back-button-label {
-    display: none;
-  }
-  i {
-    display: block;
-  }
-
-  &:hover {
-    opacity: 1;
-    width: 180px;
-    aspect-ratio: 3 / 1;
-    z-index: 2;
-    transition: opacity linear 0.3s;
-    .back-button-label {
-      display: block;
-    }
-  }
-}
-
 .container-fluid {
   &.top {
     height: 120px;

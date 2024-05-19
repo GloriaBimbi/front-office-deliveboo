@@ -488,79 +488,6 @@ export default {
   }
 }
 
-.cart-list {
-  padding: 0;
-  list-style-type: none;
-  overflow: auto;
-  .cart-list-item {
-    display: flex;
-    gap: 0.5rem;
-    border-block: 1px solid rgba(0, 0, 0);
-    padding: 0.5rem;
-
-    .img-dish-wrapper {
-      width: 100px;
-      height: 100px;
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
-    }
-
-    .primary-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding-block: 0.5rem;
-      p {
-        margin-bottom: 0;
-      }
-    }
-
-    .quantity-info {
-      display: flex;
-      margin-left: auto;
-      flex-direction: column;
-      justify-content: space-between;
-      // padding-block: 0.5rem;
-      p {
-        text-align: end;
-        font-size: 1.5rem;
-      }
-      .quantity-wrapper {
-        display: flex;
-        gap: 0.5rem;
-        margin-left: auto;
-        .quantity-btn {
-          cursor: pointer;
-          aspect-ratio: 1 / 1;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          height: 30px;
-          cursor: pointer;
-          border-radius: 50%;
-          box-shadow: 0px 5px 8px 2px rgba(0, 0, 0, 0.2);
-          &.minus {
-            background-color: white;
-            color: red;
-            &:hover {
-              background-color: rgb(244, 244, 244);
-            }
-          }
-          &.plus {
-            background-color: #0099ff;
-            color: white;
-            &:hover {
-              background-color: #23a7ff;
-            }
-          }
-        }
-      }
-    }
-  }
-}
 .button-reset-cart {
   border-radius: 0;
   padding: 0.5rem 2rem;
@@ -626,7 +553,10 @@ export default {
   ul {
     li {
       padding-block: 1rem;
-      border-block: 1px solid #0099ff;
+      border-bottom: 1px solid #0099ff;
+      &:last-of-type {
+        border-bottom: none;
+      }
     }
   }
   .img-wrapper {
@@ -689,43 +619,6 @@ export default {
   }
 }
 
-.back-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 3px;
-  position: absolute;
-  left: 0px;
-  top: 18px;
-  width: 60px;
-  aspect-ratio: 1 / 1;
-  background-color: rgba(255, 255, 255, 0.807);
-  font-weight: bold;
-  border-radius: 0px;
-  z-index: 1;
-  opacity: 0.5;
-  a {
-    cursor: pointer;
-    text-decoration: none;
-  }
-  .back-button-label {
-    display: none;
-  }
-  i {
-    display: block;
-  }
-
-  &:hover {
-    opacity: 1;
-    width: 180px;
-    aspect-ratio: 3 / 1;
-    z-index: 2;
-    transition: opacity linear 0.3s;
-    .back-button-label {
-      display: block;
-    }
-  }
-}
 .modal-cart {
   position: fixed;
   top: 0;
