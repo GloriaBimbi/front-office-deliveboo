@@ -31,7 +31,6 @@ export default {
 
 <style lang="scss" scoped>
 .navbar {
-  height: 75px;
   z-index: 1000;
   background: rgb(12, 22, 74);
   .container-logo {
@@ -74,6 +73,12 @@ export default {
       padding-bottom: 25px;
       border-radius: 50%;
       border: 1px solid white;
+    }
+  }
+
+  @media screen and (max-width: 540px) {
+    .button {
+      padding: 0.5rem 1rem;
     }
   }
 }

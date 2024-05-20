@@ -229,7 +229,9 @@ export default {
       >
         Your search did not produce any results...
       </h2>
-      <div class="row row-cols-2 row-cols-md-3 g-3 mb-5 loader-container">
+      <div
+        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3 mb-5 loader-container"
+      >
         <restaurant-card
           v-for="restaurant in store.restaurants"
           :restaurant="restaurant"
@@ -345,7 +347,6 @@ export default {
 #type-filter {
   .row {
     flex-wrap: nowrap;
-    width: 100%;
     overflow: auto;
     display: flex;
     align-items: end;
