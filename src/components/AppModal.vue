@@ -112,7 +112,7 @@ export default {
                 <h5>Add to your order</h5>
               </div>
             </li>
-            <li class="error">
+            <li class="error py-1 mt-0">
               <div v-if="wrongRestaurant == true" class="error-message">
                 Your order can only include dishes from the same restaurant.
               </div>

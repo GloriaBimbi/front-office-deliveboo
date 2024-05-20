@@ -162,6 +162,7 @@ export default {
 </script>
 
 <template>
+  <app-loader :loading="isLoading"></app-loader>
   <section class="jumbo">
     <img src="../../public/take-away-animate.svg" alt="" />
 
@@ -240,7 +241,6 @@ export default {
           :restaurant="restaurant"
           :key="restaurant.id"
         />
-        <app-loader :loading="isLoading"></app-loader>
       </div>
       <!-- paginator -->
       <div class="mt-3" v-if="pagination.length > 3">

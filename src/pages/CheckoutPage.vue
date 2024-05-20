@@ -20,6 +20,8 @@ export default {
         email: "",
       },
       errors: {},
+
+      loading: false, // Add loading state
     };
   },
 
@@ -96,6 +98,8 @@ export default {
       this.clearErrors();
 
       if (this.validateForm()) {
+        this.loading = true; // Set loading to true when the purchase process starts
+
         if (this.clientToken && this.dropinInstance) {
           this.dropinInstance.requestPaymentMethod(
             (requestPaymentMethodErr, payload) => {
@@ -104,6 +108,7 @@ export default {
                   "Errore durante la richiesta del metodo di pagamento:",
                   requestPaymentMethodErr
                 );
+                this.loading = false; // Set loading to false on error
                 return;
               }
 
@@ -141,6 +146,7 @@ export default {
                 })
                 .catch((error) => {
                   console.error("Errore durante il pagamento:", error);
+                  this.loading = false; // Set loading to false on error
                 });
             }
           );
@@ -148,6 +154,7 @@ export default {
           console.error(
             "Token client non disponibile. Impossibile inizializzare il client Braintree."
           );
+          this.loading = false; // Set loading to false on error
         }
       }
     },
@@ -236,6 +243,10 @@ export default {
 
 <template>
   <div class="wrapper-checkout">
+    <div v-if="loading" class="loading-screen">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
     <div class="container">
       <div
         class="row row-cols-1 row-cols-md-2 g-5 flex-column-reverse flex-md-row"
@@ -457,6 +468,10 @@ export default {
 </template>
 
 <style lang="scss" scoped>
+.error {
+  color: red;
+  margin-top: 5px;
+}
 .wrapper-checkout {
   min-height: 100vh;
   width: 100%;

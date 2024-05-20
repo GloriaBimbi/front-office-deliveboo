@@ -294,18 +294,28 @@ export default {
           <li class="d-flex gap-2" v-for="dish in restaurant.dishes">
             <div class="d-md-flex gap-3">
               <div @click="handleModalOpening(dish)" class="img-wrapper">
-                <img :src="dish.image" alt="" />
+                <img
+                  :src="dish.image"
+                  alt=""
+                  :class="!dish.visible ? 'non-visible' : ''"
+                />
               </div>
               <!-- <div class="col-6 col-md-9 d-flex"> -->
               <div
                 class="dish-detail d-flex flex-column"
-                @click="handleModalOpening(dish)"
+                @click="dish.visible ? handleModalOpening(dish) : ''"
               >
                 <h3>{{ dish.name }}</h3>
-                <p>{{ dish.description }}</p>
+                <p v-if="dish.visible">{{ dish.description }}</p>
+                <p v-else class="text-danger fs-3" style="width: 100%">
+                  This dish is not Available
+                </p>
               </div>
             </div>
-            <div class="dish-purchase ms-auto d-flex flex-column">
+            <div
+              class="dish-purchase ms-auto d-flex flex-column"
+              v-if="dish.visible"
+            >
               <h3 class="dish-price">{{ formatPrice(dish.price) }}</h3>
               <div class="control-wrapper d-flex gap-2 mt-auto">
                 <div
@@ -334,34 +344,36 @@ export default {
               <div class="modal-dialog">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h5 class="modal-title">Error</h5>
+                    <h5 class="modal-title">
+                      Your cart contains other restaurant dishes
+                    </h5>
+                    <div @click="closeModal()" class="close-element">
+                      <i class="fa-solid fa-xmark"></i>
+                    </div>
                   </div>
                   <div class="modal-body">
                     <p>
-                      The cart contains items from a different restaurant. Do
-                      you want to clear the cart and continue with the new
-                      order?
+                      You can't add a dish from a different restaurant. Do you
+                      want to go back to the previous restaurant or do you want
+                      to clear your cart and add this dish?
                     </p>
                   </div>
-                  <div class="modal-footer">
+                  <div class="modal-footer row d-flex align-items-center px-3">
                     <button
                       type="button"
-                      class="btn btn-secondary"
-                      @click="closeModal()"
+                      class="btn btn-info col"
+                      @click="goToRestaurant()"
                     >
-                      Close
-                    </button>
-                    <button type="button" class="btn btn-info">
-                      <span @click="goToRestaurant()"
-                        >Go back to "{{ store.cartRestaurant }}" page</span
-                      >
+                      <i class="fa-solid fa-arrow-rotate-left me-1"></i>
+                      <span>Go back to "{{ store.cartRestaurant }}"</span>
                     </button>
                     <button
                       type="button"
-                      class="btn btn-warning"
+                      class="btn btn-warning col"
                       @click="resetCartAdd(dish)"
                     >
-                      Clear Cart
+                      Clear Cart and Add
+                      <i class="fa-solid fa-plus me-1"></i>
                     </button>
                   </div>
                 </div>
@@ -617,6 +629,10 @@ export default {
       }
     }
   }
+}
+
+.non-visible {
+  filter: grayscale(1);
 }
 
 .modal-cart {
