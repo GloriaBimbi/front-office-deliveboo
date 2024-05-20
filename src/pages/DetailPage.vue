@@ -293,7 +293,10 @@ export default {
         <ul class="mx-0 px-0">
           <li class="d-flex gap-2" v-for="dish in restaurant.dishes">
             <div class="d-md-flex gap-3">
-              <div @click="handleModalOpening(dish)" class="img-wrapper">
+              <div
+                @click="dish.visible ? handleModalOpening(dish) : ''"
+                class="img-wrapper"
+              >
                 <img
                   :src="dish.image"
                   alt=""
