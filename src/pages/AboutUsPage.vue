@@ -13,7 +13,7 @@
     <h1 class="text-center">About us:</h1>
   </div>
   <div class="container-fluid bottom">
-    <div class="row my-5">
+    <div class="row row-cols-1 row-cols-lg-2 g-3 my-5">
       <div class="col d-flex justify-content-start flex-column">
         <div class="our-mission first p-1 pe-3">
           <h2 class="text-center">Our mission:</h2>
