@@ -245,7 +245,7 @@ export default {
   <div class="wrapper-checkout">
     <div v-if="loading" class="loading-screen">
       <div class="spinner"></div>
-      <p>Loading...</p>
+      <!-- <p>Loading...</p> -->
     </div>
     <div class="container">
       <div

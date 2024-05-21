@@ -445,7 +445,13 @@ export default {
           <div class="total-price">
             <span>Total price: {{ calculateTotalPrice() }}</span>
             <div class="btn-wrapper d-flex">
-              <a href="\checkout" class="checkout-btn"> Check-out </a>
+              <a
+                href="\checkout"
+                class="checkout-btn"
+                v-if="store.cart.length > 0"
+              >
+                Check-out
+              </a>
               <div class="close-btn" data-bs-dismiss="offcanvas">Close</div>
             </div>
           </div>
